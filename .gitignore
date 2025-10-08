@@ -1,0 +1,21 @@
+# Root
+.DS_Store
+*.log
+.env
+.env.*
+
+# Backend (Laravel)
+backend/vendor/
+backend/storage/
+backend/bootstrap/cache/
+backend/.env
+backend/.env.*
+backend/.phpunit.cache/
+
+# Frontend (Nuxt/Node)
+frontend/node_modules/
+frontend/.nuxt/
+frontend/.output/
+frontend/.nitro/
+frontend/.env
+frontend/.env.*
