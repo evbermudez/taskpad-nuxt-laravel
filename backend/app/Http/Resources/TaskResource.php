@@ -17,12 +17,12 @@ class TaskResource extends JsonResource
         return [
             'id'        => $this->id,
             'statement' => $this->statement,
-            'taskDate'  => $this->task_date->toDateString(),
-            'priority'  => $this->priority,
-            'position'  => $this->position,
-            'isDone'    => $this->is_done,
-            'createdAt' => $this->created_at?->toISOString(),
-            'updatedAt' => $this->updated_at?->toISOString(),
+            'task_date' => $this->task_date?->format('Y-m-d'),
+            'priority'  => (int) $this->priority,
+            'position'  => (int) $this->position,
+            'is_done'   => (bool) $this->is_done,
+            'created_at'=> $this->created_at?->toISOString(),
+            'updated_at'=> $this->updated_at?->toISOString(),
         ];
     }
 }

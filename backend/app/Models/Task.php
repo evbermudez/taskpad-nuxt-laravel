@@ -6,17 +6,25 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
-        'statement','task_date','priority','position','is_done','user_id'
+        'user_id',
+        'statement',
+        'task_date',
+        'priority',
+        'position',
+        'is_done',
     ];
 
     protected $casts = [
-        'task_date' => 'date',
+        'task_date' => 'date:Y-m-d',
+        'priority'  => 'integer',
+        'position'  => 'integer',
         'is_done'   => 'boolean',
     ];
 
