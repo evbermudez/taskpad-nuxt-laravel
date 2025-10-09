@@ -21,9 +21,9 @@ class AuthController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        $user = Auth::user();
+        $request->session()->regenerate();
 
-        return response()->json(['user' => $user]);
+        return response()->json(['user' => $request->user()]);
     }
 
     /**

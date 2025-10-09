@@ -1,39 +1,26 @@
 import { defineStore } from 'pinia'
 import { useApi } from '@/composables/useApi'
 
-type User = { id: number; name: string; email: string } | null
+type User = { id:number; name:string; email:string } | null
 
 export const useAuth = defineStore('auth', {
-  state: () => ({
-    user: null as User,
-    loading: false as boolean,
-    error: '' as string
-  }),
+  state: () => ({ user: null as User, loading: false, error: '' }),
   actions: {
     async fetchMe() {
-      const { client } = useApi()
+      const { api } = useApi()
       try {
-        this.user = await client('/me') as any
+        const res = await api('/me') as any
+        this.user = res.user ?? null
       } catch {
         this.user = null
       }
     },
     async login(email: string, password: string) {
-      const { csrf, webBase } = useApi()
+      const { login } = useApi()
       this.loading = true; this.error = ''
       try {
-        await csrf()
-        await $fetch(`${webBase}/login`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: { email, password }
-        })
-        await this.fetchMe()
+        await login(email, password)     // 👈 calls web client + CSRF
+        await this.fetchMe()             // then get user from /api/me
       } catch (e: any) {
         this.error = e?.data?.message || 'Login failed'
         this.user = null
@@ -42,16 +29,8 @@ export const useAuth = defineStore('auth', {
       }
     },
     async logout() {
-      const { webBase } = useApi()
-      try {
-        await $fetch(`${webBase}/logout`, {
-          method: 'POST',
-          credentials: 'include',
-          headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
-        })
-      } finally {
-        this.user = null
-      }
+      const { logout } = useApi()
+      try { await logout() } finally { this.user = null }
     }
   }
 })
