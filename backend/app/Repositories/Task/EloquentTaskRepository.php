@@ -1,16 +1,25 @@
 <?php
 namespace App\Repositories\Task;
-use App\Models\Task;
-use App\Models\User;
+use App\Models\{Task, User};
+use Carbon\Carbon;
+use Illuminate\Support\Collection;
 
 use Illuminate\Support\Facades\DB;
 
 class EloquentTaskRepository implements TaskRepositoryInterface
 {
-    public function listByDate(User $user, $date, ?string $sort='position', ?string $dir='asc')
+    public function listByDate(
+        User $user,
+        Carbon|string $date,
+        ?string $sort='position',
+        ?string $dir='asc'
+        ): Collection
     {
-        return Task::where('user_id', $user->id)
-            ->whereDate('task_date', \Carbon\Carbon::parse($date))
+        $day = $date instanceof Carbon ? $date : Carbon::parse($date);
+
+        return Task::query()
+            ->where('user_id', $user->id)
+            ->whereDate('task_date', $day)
             ->orderBy($sort, $dir)
             ->get();
     }
