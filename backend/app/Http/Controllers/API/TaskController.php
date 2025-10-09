@@ -56,6 +56,13 @@ class TaskController extends Controller
         return response()->noContent();
     }
 
+    public function toggle(Request $request, Task $task)
+    {
+        $this->authorize('update', $task);
+        $task = $this->taskRepository->toggle($task);
+        return TaskResource::make($task);
+    }
+
     public function reorder(ReorderRequest $request)
     {
         $this->taskRepository->reorder($request->user(), $request->orders);
