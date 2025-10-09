@@ -9,5 +9,6 @@ interface TaskRepositoryInterface {
     public function create(User $user, array $data): Task;
     public function update(Task $task, array $data): Task;
     public function delete(Task $task): void;
+    public function toggle(Task $task): Task;
     public function reorder(User $user, array $orders): void; // [{id,position}]
 }

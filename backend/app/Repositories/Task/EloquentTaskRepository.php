@@ -21,6 +21,7 @@ class EloquentTaskRepository implements TaskRepositoryInterface
             ->where('user_id', $user->id)
             ->whereDate('task_date', $day)
             ->orderBy($sort, $dir)
+            ->orderBy('id')
             ->get();
     }
 
@@ -35,13 +36,10 @@ class EloquentTaskRepository implements TaskRepositoryInterface
 
     public function create(User $user, array $data): Task
     {
-        $max = Task::where('user_id', $user->id)
-            ->whereDate('task_date', $data['task_date'])
-            ->max('position');
-
-        $data['position'] = is_null($max) ? 0 : $max + 1;
-
-        return $user->tasks()->create($data);
+        $data['user_id'] = $user->id;
+        $data['priority'] = $data['priority'] ?? 2;
+        $data['position'] = $data['position'] ?? (($user->tasks()->max('position') ?? 0) + 1);
+        return Task::create($data);
     }
 
     public function update(Task $task, array $data): Task
@@ -55,13 +53,20 @@ class EloquentTaskRepository implements TaskRepositoryInterface
         $task->delete();
     }
 
+    public function toggle(Task $task): Task
+    {
+        $task->is_done = !$task->is_done;
+        $task->save();
+        return $task->refresh();
+    }
+
     public function reorder(User $user, array $orders): void
     {
-        DB::transaction(function () use ($orders, $user) {
-            foreach ($orders as $row) {
-                Task::where('id', $row['id'])
-                    ->where('user_id', $user->id)
-                    ->update(['position' => $row['position']]);
+        $map = collect($orders)->keyBy('id');
+        $user->tasks()->whereDate('task_date',$date)->get()->each(function(Task $t) use ($map) {
+            if ($map->has($t->id)) {
+                $t->position = (int)$map[$t->id]['position'];
+                $t->save();
             }
         });
     }
