@@ -25,21 +25,24 @@
             @click="toggleDark()"
           />
         </ClientOnly>
-        <template v-if="auth.user">
-          <span>👋 {{ auth.user.name }}</span>
-          <UButton
-            color="neutral"
-            variant="ghost"
-            icon="i-heroicons-arrow-right-on-rectangle"
-            @click="handleLogout()"
-          >
-            Logout
-          </UButton>
-        </template>
 
-        <template v-else>
-          <NuxtLink to="/login" class="text-blue-500 hover:underline">Login</NuxtLink>
-        </template>
+        <ClientOnly>
+          <template v-if="auth.user">
+            <span>👋 {{ auth.user.name }}</span>
+            <UButton
+              color="neutral"
+              variant="ghost"
+              icon="i-heroicons-arrow-right-on-rectangle"
+              @click="handleLogout()"
+            >
+              Logout
+            </UButton>
+          </template>
+
+          <template v-else>
+            <NuxtLink to="/login" class="text-blue-500 hover:underline">Login</NuxtLink>
+          </template>
+        </ClientOnly>
       </div>
     </header>
 
