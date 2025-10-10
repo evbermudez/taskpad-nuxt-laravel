@@ -11,6 +11,12 @@ export type Task = {
   is_done: boolean
 }
 
+export const PRIORITY_OPTIONS = [
+  { label: 'High', value: 1 },
+  { label: 'Medium', value: 2 },
+  { label: 'Low', value: 3 }
+]
+
 export const useTasks = defineStore('tasks', () => {
   const { api } = useApi()
   const items: Ref<Task[]> = ref([])
@@ -82,5 +88,27 @@ export const useTasks = defineStore('tasks', () => {
     await api('/tasks/reorder', { method: 'POST', body: { orders } })
   }
 
-  return { items, loading, error, fetchByDate, create, toggle, update, remove, search, reorder }
+  function resequence() {
+    items.value = items.value.map((t, i) => ({ ...t, position: i + 1 }))
+  }
+
+  async function move(id: number, dir: -1 | 1) {
+    const idx = items.value.findIndex(t => t.id === id)
+    if (idx < 0) return
+
+    const newIdx = idx + dir
+    if (newIdx < 0 || newIdx >= items.value.length) return
+
+    const copy = [...items.value]
+    const moved = copy.splice(idx, 1)[0]
+    if (!moved) return
+    copy.splice(newIdx, 0, moved)
+    items.value = copy
+    resequence()
+
+    await reorder(items.value.map(t => ({ id: t.id, position: t.position })))
+  }
+
+
+  return { items, loading, error, fetchByDate, create, toggle, update, remove, search, reorder, move }
 })
