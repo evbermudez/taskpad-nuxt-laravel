@@ -14,20 +14,21 @@ export const useAuth = defineStore('auth', {
     async fetchMe() {
       const { api } = useApi()
       try {
-        const res = await api('/me') as any
+        const res = await api<{ user: User }>('/me')
         this.user = res.user ?? null
       } catch {
         this.user = null
       }
     },
-    async hydrate() {
+    async restore() {
       if (this.ready) return
       await this.fetchMe()
       this.ready = true
     },
     async login(email: string, password: string) {
       const { login } = useApi()
-      this.loading = true; this.error = ''
+      this.loading = true
+      this.error = ''
       try {
         await login(email, password)
         await this.fetchMe()
@@ -36,6 +37,7 @@ export const useAuth = defineStore('auth', {
         this.error = e?.data?.message || 'Login failed'
         this.user = null
         this.ready = true
+        throw e
       } finally {
         this.loading = false
       }
