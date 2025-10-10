@@ -1,7 +1,8 @@
 <template>
-  <UCard :ui="{ body: { padding: 'p-3' } }" class="group">
+    <ClientOnly>
+  <UCard :ui="{ body: 'p-3' }" class="group">
     <div class="flex items-center gap-3">
-      <UCheckbox :model-value="task.is_done" @update:model-value="toggle" />
+      <UCheckbox :model-value="task.is_done" @update:model-value="onCheck" />
 
       <div class="flex-1">
         <template v-if="editing">
@@ -9,26 +10,40 @@
         </template>
         <template v-else>
           <button class="text-left w-full" @click="startEdit">
-            <p :class="task.is_done ? 'line-through opacity-60' : ''">{{ task.statement }}</p>
-            <p class="text-xs text-gray-500">Priority: {{ labelPriority(task.priority) }}</p>
+            <p :class="task.is_done ? 'line-through opacity-60' : ''">
+              {{ task.statement }}
+            </p>
+            <p class="text-xs text-gray-500">
+              Priority:
+              <UBadge :color="badgeColor(task.priority)" variant="soft">
+                {{ labelPriority(task.priority) }}
+              </UBadge>
+            </p>
           </button>
         </template>
       </div>
 
-      <UButton color="red" variant="ghost" icon="i-heroicons-trash" @click="askDelete = true" class="opacity-0 group-hover:opacity-100 transition-opacity" />
+      <UButton
+        color="error"
+        variant="ghost"
+        icon="i-heroicons-trash"
+        @click="askDelete = true"
+        class="opacity-0 group-hover:opacity-100 transition-opacity"
+      />
     </div>
 
-    <UModal v-model="askDelete">
+    <UModal v-model="askDelete" :overlay="true" prevent-close>
       <UCard>
         <template #header>Delete Task?</template>
         <p>Remove “{{ task.statement }}” permanently?</p>
         <div class="mt-4 flex justify-end gap-2">
           <UButton variant="ghost" @click="askDelete = false">Cancel</UButton>
-          <UButton color="red" @click="doDelete">Delete</UButton>
+          <UButton color="error" @click="doDelete">Delete</UButton>
         </div>
       </UCard>
     </UModal>
   </UCard>
+  </ClientOnly>
 </template>
 
 <script setup lang="ts">
@@ -43,8 +58,12 @@ function labelPriority(p: number) {
   return p === 1 ? 'High' : p === 2 ? 'Medium' : 'Low'
 }
 
-async function toggle(val: boolean) {
-  await tasks.toggle(props.task.id)
+function badgeColor(p: number): 'error' | 'warning' | 'neutral' {
+  return p === 1 ? 'error' : p === 2 ? 'warning' : 'neutral'
+}
+
+async function onCheck(value: boolean | 'indeterminate') {
+    await tasks.toggle(props.task.id)
 }
 
 function startEdit() {

@@ -1,40 +1,36 @@
 <template>
-  <div class="min-h-dvh transition-colors duration-300 bg-white text-gray-900 dark:bg-gray-900 dark:text-gray-100">
-    <header class="flex items-center justify-between p-4 shadow bg-white dark:bg-gray-800">
-      <NuxtLink to="/" class="font-bold text-lg">TaskPad</NuxtLink>
+  <div class="min-h-dvh bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100">
+    <header class="border-b border-gray-200 dark:border-gray-800">
+      <UContainer class="flex items-center justify-between py-3">
+        <NuxtLink to="/" class="font-bold text-lg">TaskPad</NuxtLink>
 
-      <ClientOnly>
-        <nav class="flex items-center gap-4">
-          <template v-if="auth.user">
-            <span>👋 {{ auth.user.name }}</span>
-            <button
-              @click="handleLogout"
-              class="rounded bg-red-600 text-white px-3 py-1"
-            >
-              Logout
-            </button>
-          </template>
-          <template v-else>
-            <NuxtLink to="/login" class="text-blue-500 hover:underline">Login</NuxtLink>
-          </template>
+        <ClientOnly>
+          <div class="flex items-center gap-3">
+            <template v-if="auth.user">
+              <span class="text-sm opacity-80">👋 {{ auth.user.name }}</span>
+              <UButton color="error" @click="handleLogout">Logout</UButton>
+            </template>
+            <template v-else>
+              <UButton to="/login" variant="ghost">Login</UButton>
+            </template>
 
-          <button
-            class="rounded border px-2 py-1 text-sm"
-            @click="toggleDark()"
-            title="Toggle dark mode"
-          >
-            {{ isDark ? '🌙' : '☀️' }}
-          </button>
-        </nav>
-
-        <template #fallback>
-          <div class="h-6 w-40 rounded bg-gray-200/60 dark:bg-gray-700/50"></div>
-        </template>
-      </ClientOnly>
+            <UButton
+                variant="ghost"
+                size="sm"
+                :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"
+                :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
+                @click="toggleDark()"
+            />
+          </div>
+          <template #fallback><USkeleton class="h-6 w-40" /></template>
+        </ClientOnly>
+      </UContainer>
     </header>
 
-    <main class="p-6">
-      <slot />
+    <main>
+      <UContainer class="py-6">
+        <slot />
+      </UContainer>
     </main>
   </div>
 </template>
@@ -51,7 +47,6 @@ const isDark = useDark({
   valueLight: '',
   storageKey: 'theme-preference',
   initialValue: 'light',
-  disableTransition: false,
 })
 const toggleDark = useToggle(isDark)
 

@@ -9,7 +9,7 @@
 
     <TaskComposer :date="date" />
 
-    <UDivider />
+    <div class="my-4 h-px bg-gray-200 dark:bg-gray-800"></div>
 
     <div v-if="tasks.loading">
       <USkeleton class="h-12 mb-2" v-for="n in 3" :key="n" />
