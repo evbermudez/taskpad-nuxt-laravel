@@ -1,6 +1,8 @@
 export function useApi() {
   const { public: { apiBase, webBase } } = useRuntimeConfig()
 
+  type ApiClient = <T = unknown>(url: string, opts?: any) => Promise<T>
+
   const makeClient = (baseURL: string) => $fetch.create({
     baseURL,
     credentials: 'include',

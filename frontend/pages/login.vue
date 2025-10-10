@@ -1,7 +1,7 @@
 <template>
   <main class="min-h-screen grid place-items-center p-6">
     <form @submit.prevent="onSubmit" class="w-full max-w-sm space-y-4 p-6 rounded-2xl shadow">
-      <h1 class="text-2xl font-bold text-center">TaskPad Login</h1>
+      <h1 class="text-2xl font-bold text-center text-pink">TaskPad Login</h1>
 
       <label class="block">
         <span class="text-sm">Email</span>
