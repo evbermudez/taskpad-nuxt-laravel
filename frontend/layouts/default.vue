@@ -25,9 +25,21 @@
             @click="toggleDark()"
           />
         </ClientOnly>
-        <div class="text-sm" v-if="auth.user">
-        {{ auth.user?.name }}
-        </div>
+        <template v-if="auth.user">
+          <span>👋 {{ auth.user.name }}</span>
+          <UButton
+            color="neutral"
+            variant="ghost"
+            icon="i-heroicons-arrow-right-on-rectangle"
+            @click="handleLogout()"
+          >
+            Logout
+          </UButton>
+        </template>
+
+        <template v-else>
+          <NuxtLink to="/login" class="text-blue-500 hover:underline">Login</NuxtLink>
+        </template>
       </div>
     </header>
 
@@ -57,5 +69,10 @@ const q = ref('')
 const bus = useEventBus<string>('global-search')
 function broadcastSearch() {
   bus.emit(q.value)
+}
+
+async function handleLogout() {
+  await auth.logout()
+  await navigateTo('/login')
 }
 </script>
