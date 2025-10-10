@@ -1,57 +1,52 @@
 <template>
-  <div class="min-h-dvh bg-white text-gray-900 transition-colors duration-300 dark:bg-gray-900 dark:text-gray-100">
-    <header class="border-b border-gray-200 dark:border-gray-800">
-      <UContainer class="flex items-center justify-between py-3">
-        <NuxtLink to="/" class="font-bold text-lg">TaskPad</NuxtLink>
+  <div class="min-h-dvh bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
+    <!-- Header -->
+    <header class="sticky top-0 z-20 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-black/10">
+      <div class="mx-auto max-w-6xl px-4 h-14 flex items-center gap-3">
+        <NuxtLink to="/" class="font-semibold">TaskPad</NuxtLink>
 
-        <ClientOnly>
-          <div class="flex items-center gap-3">
-            <template v-if="auth.user">
-              <span class="text-sm opacity-80">👋 {{ auth.user.name }}</span>
-              <UButton color="error" @click="handleLogout">Logout</UButton>
-            </template>
-            <template v-else>
-              <UButton to="/login" variant="ghost">Login</UButton>
-            </template>
+        <!-- Top Search -->
+        <div class="ms-auto w-[520px] max-w-full">
+          <UInput
+            v-model="q"
+            icon="i-heroicons-magnifying-glass-20-solid"
+            placeholder="Search tasks…"
+            @input="broadcastSearch"
+          />
+        </div>
 
-            <UButton
-                variant="ghost"
-                size="sm"
-                :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"
-                :aria-label="isDark ? 'Switch to light mode' : 'Switch to dark mode'"
-                @click="toggleDark()"
-            />
-          </div>
-          <template #fallback><USkeleton class="h-6 w-40" /></template>
-        </ClientOnly>
-      </UContainer>
+        <!-- Theme + avatar -->
+        <UButton
+          variant="ghost"
+          :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"
+          @click="toggleDark()"
+        />
+        <UAvatar size="sm" alt="me" />
+      </div>
     </header>
 
-    <main>
-      <UContainer class="py-6">
+    <!-- Body: sidebar + content -->
+    <div class="mx-auto max-w-6xl grid grid-cols-[260px_1fr] gap-0">
+      <aside class="border-r border-black/10 bg-white/70 dark:bg-gray-900/70">
+        <slot name="sidebar" />
+      </aside>
+
+      <main class="bg-white dark:bg-gray-900">
         <slot />
-      </UContainer>
-    </main>
+      </main>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useAuth } from '@/stores/auth'
-import { useDark, useToggle } from '@vueuse/core'
+import { useDark, useToggle, useEventBus } from '@vueuse/core'
 
-const auth = useAuth()
-const isDark = useDark({
-  selector: 'html',
-  attribute: 'class',
-  valueDark: 'dark',
-  valueLight: '',
-  storageKey: 'theme-preference',
-  initialValue: 'light',
-})
+const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-async function handleLogout() {
-  await auth.logout()
-  await navigateTo('/login')
+const q = ref('')
+const bus = useEventBus<string>('global-search')
+function broadcastSearch() {
+  bus.emit(q.value)
 }
 </script>

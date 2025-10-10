@@ -1,60 +1,61 @@
 <template>
-  <div class="space-y-6">
-    <!-- Filters -->
-    <div class="flex flex-wrap items-center gap-3">
-      <UInput v-model="date" type="date" class="w-48" @update:model-value="load" />
-      <UInput v-model="q" placeholder="Search across all dates…" class="w-64" @input="queueSearch" />
-      <USelect v-model="sort" :options="sortOpts" class="w-40" @change="load" />
-      <USelect v-model="dir"  :options="dirOpts"  class="w-28" @change="load" />
+  <NuxtLayout name="default">
+    <!-- left column -->
+    <template #sidebar>
+      <SidebarDates :date="date" @select="setDate" />
+    </template>
 
-      <div class="ms-auto flex gap-2">
-        <UButton icon="i-heroicons-chevron-left-20-solid" variant="soft" @click="shift(-1)">Prev</UButton>
-        <UButton icon="i-heroicons-chevron-right-20-solid" variant="soft" @click="shift(1)">Next</UButton>
+    <!-- main column -->
+    <div class="flex flex-col min-h-[calc(100dvh-3.5rem)]">
+      <!-- top controls -->
+      <div class="p-4 border-b border-black/10 flex items-center gap-3">
+        <UInput type="date" v-model="date" class="w-48" @update:model-value="load" />
+        <USelect v-model="sort" :options="sortOpts" class="w-40" @change="load" />
+        <USelect v-model="dir"  :options="dirOpts"  class="w-28" @change="load" />
+        <div class="ms-auto text-sm opacity-60" v-if="q">
+          Showing {{ tasks.items.length }} result(s) for “{{ q }}”
+        </div>
+      </div>
+
+      <!-- list -->
+      <div class="flex-1 p-4">
+        <div v-if="tasks.loading">
+          <USkeleton class="h-12 mb-2" v-for="n in 4" :key="n" />
+        </div>
+
+        <div v-else-if="!tasks.items.length" class="p-8">
+          <UAlert icon="i-heroicons-inbox-20-solid" title="No tasks" description="Add your first task below." />
+        </div>
+
+        <div v-else class="space-y-2">
+          <TaskItem v-for="t in tasks.items" :key="t.id" :task="t" />
+        </div>
+      </div>
+
+      <div class="p-4 border-t border-black/10 bg-white/80 dark:bg-gray-900/80 backdrop-blur sticky bottom-0">
+        <TaskComposer :date="date" />
       </div>
     </div>
-
-    <!-- Composer -->
-    <UCard>
-      <TaskComposer :date="date" />
-    </UCard>
-
-    <!-- Loading -->
-    <div v-if="tasks.loading">
-      <USkeleton class="h-12 mb-2" v-for="n in 3" :key="n" />
-    </div>
-
-    <!-- Empty -->
-    <div v-else-if="!tasks.items.length">
-      <UAlert
-        icon="i-heroicons-inbox-20-solid"
-        title="No tasks yet"
-        description="Add your first task for this date."
-      />
-    </div>
-
-    <!-- List -->
-    <div v-else class="grid gap-2">
-      <TaskItem v-for="t in tasks.items" :key="t.id" :task="t" />
-    </div>
-  </div>
+  </NuxtLayout>
 </template>
 
 <script setup lang="ts">
+import { useEventBus } from '@vueuse/core'
 import { useTasks } from '@/stores/tasks'
 import TaskComposer from '@/components/TaskComposer.vue'
 import TaskItem from '@/components/TaskItem.vue'
+import SidebarDates from '@/components/SidebarDates.vue'
 
 definePageMeta({ layout: 'default' })
 
 const tasks = useTasks()
 
-// date + filters
 const today = new Date().toISOString().slice(0, 10)
 const date = ref(today)
 const q = ref('')
+
 const sort = ref<'position' | 'priority' | 'created_at'>('position')
 const dir  = ref<'asc' | 'desc'>('asc')
-
 const sortOpts = [
   { label: 'Position', value: 'position' },
   { label: 'Priority', value: 'priority' },
@@ -73,25 +74,17 @@ async function load() {
   }
 }
 
-// debounce search (client-only)
-let timer: ReturnType<typeof setTimeout> | null = null
-function queueSearch() {
-  if (timer) clearTimeout(timer)
-  timer = setTimeout(async () => {
-    if (q.value.trim()) {
-      await tasks.search(q.value.trim())
-    } else {
-      await load()
-    }
-  }, 250)
-}
-
-function shift(days: number) {
-  const d = new Date(date.value)
-  d.setDate(d.getDate() + days)
-  date.value = d.toISOString().slice(0, 10)
+function setDate(d: string) {
+  date.value = d
+  q.value = ''
   load()
 }
+
+const bus = useEventBus<string>('global-search')
+bus.on(async (value) => {
+  q.value = value ?? ''
+  await load()
+})
 
 onMounted(load)
 </script>
