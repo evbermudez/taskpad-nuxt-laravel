@@ -5,19 +5,25 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (!auth.ready) {
     try {
-      await auth.restore()
-    } catch {
-      // ignore errors
+      await auth.fetchMe()
+    } catch (e) {
+      console.warn('fetchMe failed:', e)
     }
   }
 
+  console.log('[middleware] after fetch, user:', auth.user)
+
   const isPublic = to.path === '/login'
+
+  console.log('[mw] path:', to.path, 'user?', !!auth.user)
   
   if (!auth.user && !isPublic) {
-    return navigateTo('/login')
+    console.warn('[middleware] redirect → /login')
+    return navigateTo('/login', { replace: true })
   }
 
   if (auth.user && isPublic) {
-    return navigateTo('/')
+    console.warn('[middleware] redirect → /')
+    return navigateTo('/', { replace: true })
   }
 })

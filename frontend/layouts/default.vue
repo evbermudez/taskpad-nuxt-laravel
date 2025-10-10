@@ -6,22 +6,28 @@
         <NuxtLink to="/" class="font-semibold">TaskPad</NuxtLink>
 
         <!-- Top Search -->
-        <div class="ms-auto w-[520px] max-w-full">
+        <div class="min-w-[220px] max-w-lg flex-1">
           <UInput
             v-model="q"
-            icon="i-heroicons-magnifying-glass-20-solid"
             placeholder="Search tasks…"
+            class="w-full border border-black/10 dark:border-gray-700 p-2"
             @input="broadcastSearch"
+            variant="outline"
+            id="global-search"
           />
         </div>
 
-        <!-- Theme + avatar -->
-        <UButton
-          variant="ghost"
-          :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"
-          @click="toggleDark()"
-        />
-        <UAvatar size="sm" alt="me" />
+        <!-- Theme + user name -->
+         <ClientOnly>
+          <UButton
+            variant="ghost"
+            :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"
+            @click="toggleDark()"
+          />
+        </ClientOnly>
+        <div class="text-sm" v-if="auth.user">
+        {{ auth.user?.name }}
+        </div>
       </div>
     </header>
 
@@ -39,6 +45,9 @@
 </template>
 
 <script setup lang="ts">
+import { useAuth } from '@/stores/auth'
+const auth = useAuth()
+
 import { useDark, useToggle, useEventBus } from '@vueuse/core'
 
 const isDark = useDark()

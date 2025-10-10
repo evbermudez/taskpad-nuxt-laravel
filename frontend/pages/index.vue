@@ -46,7 +46,7 @@ import TaskComposer from '@/components/TaskComposer.vue'
 import TaskItem from '@/components/TaskItem.vue'
 import SidebarDates from '@/components/SidebarDates.vue'
 
-definePageMeta({ layout: 'default' })
+definePageMeta({ layout: false })
 
 const tasks = useTasks()
 

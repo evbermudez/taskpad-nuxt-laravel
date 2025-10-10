@@ -23,6 +23,7 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({ layout: false })
 import { useAuth } from '@/stores/auth'
 const auth = useAuth()
 const email = ref('matt@example.com')
