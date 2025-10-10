@@ -2,7 +2,7 @@
 
 Simple, fast task manager built in one repo:
 - **Backend** → Laravel 10 (Sail + Sanctum, Repository Pattern, Policies, Form Requests, JsonResources, Pest)
-- **Frontend** → Nuxt 3 (TypeScript, Tailwind, Pinia, Lucide)
+- **Frontend** → Nuxt 3 (TypeScript, Tailwind CSS, Pinia, Nuxt UI, Lucide Icons)
 
 ## Project Structure
 
@@ -71,3 +71,5 @@ Then open http://localhost:3000
   - `1 = High`
   - `2 = Medium`
   - `3 = Low`
+-	Uses Laravel Sanctum for SPA authentication
+-	Fully type-safe API client with $fetch and Pinia
