@@ -4,7 +4,11 @@ export default defineNuxtRouteMiddleware(async (to) => {
   const auth = useAuth()
 
   if (!auth.ready) {
-    await auth.hydrate()
+    try {
+      await auth.restore()
+    } catch {
+      // ignore errors
+    }
   }
 
   const isPublic = to.path === '/login'
