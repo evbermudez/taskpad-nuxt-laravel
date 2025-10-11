@@ -110,9 +110,21 @@
         <div v-if="tasks.loading">
           <USkeleton class="h-12 mb-2" v-for="n in 4" :key="n" />
         </div>
-        <div v-else-if="!tasks.items.length" class="p-8">
-          <UAlert icon="i-heroicons-inbox-20-solid" title="No tasks" description="Add your first task below." />
+
+        <!-- EMPTY STATE with big textarea composer -->
+        <div v-else-if="!tasks.items.length" class="py-16">
+          <div class="mx-auto max-w-2xl text-center space-y-4">
+            <h2 class="text-xl font-semibold">Start your day</h2>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Add your first task below.
+            </p>
+            <div class="mt-6">
+              <TaskComposer :date="date" :has-items="false" mode="hero" />
+            </div>
+          </div>
         </div>
+
+        <!-- HAS ITEMS -->
         <div v-else class="space-y-2">
           <div ref="taskList" class="space-y-2">
             <TaskItem v-for="t in tasks.items" :key="t.id" :task="t" />
@@ -120,9 +132,12 @@
         </div>
       </div>
 
-      <!-- Task composer -->
-      <div class="p-4 border-t border-black/10 dark:border-white/10 bg-white/80 dark:bg-gray-900/80 backdrop-blur sticky bottom-0">
-        <TaskComposer :date="date" />
+      <!-- Sticky composer: only when there are items -->
+      <div
+        v-if="tasks.items.length"
+        class="p-4 border-t border-black/10 dark:border-white/10 bg-white/80 dark:bg-gray-900/80 backdrop-blur sticky bottom-0"
+      >
+        <TaskComposer :date="date" :has-items="true" mode="inline" />
       </div>
     </section>
   </NuxtLayout>
