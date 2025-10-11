@@ -34,43 +34,50 @@
           </DialogPortal>
         </DialogRoot>
 
+        <!-- Brand -->
         <NuxtLink to="/" class="font-semibold hidden md:block">TaskPad</NuxtLink>
 
         <!-- Top Search -->
-        <div class="min-w-[220px] max-w-lg flex-1">
+        <div class="flex-1 min-w-[220px] max-w-lg">
           <UInput
             v-model="q"
             placeholder="Search tasks…"
-            class="w-full border border-black/10 dark:border-gray-700 p-2"
-            @input="broadcastSearch"
-            variant="outline"
+            variant="none"
             id="global-search"
+            class="w-full rounded-md border border-black/10 dark:border-gray-700 px-3 py-2 text-sm
+                  bg-white/90 dark:bg-gray-800/90 placeholder:text-gray-400 dark:placeholder:text-gray-500
+                  focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-0
+                  [--ui-ring-color:transparent] [--ui-ring-inset:0] transition-colors duration-150"
+            @update:model-value="val => bus.emit((val ?? '').trim())"
           />
         </div>
 
-        <!-- Theme + user name -->
+        <!-- Theme toggle -->
         <ClientOnly>
           <UButton
             variant="ghost"
             :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"
             @click="toggleDark()"
+            class="shrink-0"
           />
         </ClientOnly>
 
+        <!-- User info -->
         <ClientOnly>
           <template v-if="auth.user">
-            <span>👋 {{ auth.user.name }}</span>
+            <span class="hidden sm:inline text-sm opacity-80">👋 {{ auth.user.name }}</span>
             <UButton
               color="neutral"
               variant="ghost"
               icon="i-heroicons-arrow-right-on-rectangle"
               @click="handleLogout()"
+              class="hidden sm:flex"
             >
               Logout
             </UButton>
           </template>
           <template v-else>
-            <NuxtLink to="/login" class="text-blue-500 hover:underline">Login</NuxtLink>
+            <NuxtLink to="/login" class="text-blue-500 hover:underline text-sm">Login</NuxtLink>
           </template>
         </ClientOnly>
       </div>
@@ -99,7 +106,6 @@ import {
   DialogClose,
   DialogTitle
 } from 'reka-ui'
-
 import { useAuth } from '@/stores/auth'
 import { useDark, useToggle, useEventBus } from '@vueuse/core'
 
@@ -110,9 +116,6 @@ const q = ref('')
 const sidebarOpen = ref(false)
 const bus = useEventBus<string>('global-search')
 
-function broadcastSearch() {
-  bus.emit(q.value)
-}
 async function handleLogout() {
   await auth.logout()
   await navigateTo('/login')
