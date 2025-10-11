@@ -1,8 +1,14 @@
 <template>
-  <UCard :ui="{ body: 'p-3' }" class="group">
+  <UCard :ui="{ body: 'p-3' }" class="task-row group">
     <div class="flex items-center gap-3">
 
-      <GripVertical class="drag-handle size-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 cursor-grab" />
+      <div
+        class="drag-handle flex items-center justify-center size-6 rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-grab active:cursor-grabbing"
+        aria-label="Drag"
+      >
+        <GripVertical class="size-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
+      </div>
+
       <!-- Checkbox -->
       <CheckboxRoot
         :checked="task.is_done"
@@ -106,7 +112,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from 'reka-ui'
-import { Check } from 'lucide-vue-next'
+import { Check, GripVertical } from 'lucide-vue-next'
 
 const tasks = useTasks()
 const props = defineProps<{ task: Task }>()

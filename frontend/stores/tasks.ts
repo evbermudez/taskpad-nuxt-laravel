@@ -84,15 +84,21 @@ export const useTasks = defineStore('tasks', () => {
     }
   }
 
-  async function reorder(orders: { id: number; position: number }[]) {
-    await api('/tasks/reorder', { method: 'POST', body: { orders } })
+  async function reorder(
+    orders: { id: number; position: number }[],
+    date: string
+  ) {
+    await api('/tasks/reorder', {
+      method: 'POST',
+      body: { date, orders },
+    })
   }
 
   function resequence() {
     items.value = items.value.map((t, i) => ({ ...t, position: i + 1 }))
   }
 
-  async function move(id: number, dir: -1 | 1) {
+  async function move(id: number, dir: -1 | 1, date: string) {
     const idx = items.value.findIndex(t => t.id === id)
     if (idx < 0) return
 
@@ -106,7 +112,10 @@ export const useTasks = defineStore('tasks', () => {
     items.value = copy
     resequence()
 
-    await reorder(items.value.map(t => ({ id: t.id, position: t.position })))
+    await reorder(
+      items.value.map(t => ({ id: t.id, position: t.position })),
+      date
+    )
   }
 
 

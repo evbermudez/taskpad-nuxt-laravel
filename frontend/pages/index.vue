@@ -140,12 +140,13 @@ import {
   SelectLabel
 } from 'reka-ui'
 import Sortable from 'sortablejs'
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, nextTick, watchEffect } from 'vue'
 import { useEventBus, watchDebounced } from '@vueuse/core'
 import { useTasks } from '@/stores/tasks'
 import TaskComposer from '@/components/TaskComposer.vue'
 import TaskItem from '@/components/TaskItem.vue'
 import SidebarDates from '@/components/SidebarDates.vue'
+
 
 definePageMeta({ layout: false })
 
@@ -191,26 +192,60 @@ const bus = useEventBus<string>('global-search')
 bus.on((value) => { q.value = value ?? '' })
 watchDebounced(q, load, { debounce: 250, maxWait: 600 })
 
-onMounted(() => {
+watchEffect(() => {
+  if (!taskList.value || !tasks.items.length) return
+
+  if ((taskList.value as any)._sortable) return
+
+  const sortable = Sortable.create(taskList.value, {
+    animation: 150,
+    draggable: '.task-row',
+    handle: '.drag-handle',
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    forceFallback: true,
+    fallbackOnBody: true,
+    onEnd: async (evt: { oldIndex?: number | null; newIndex?: number | null }) => {
+      if (evt.oldIndex == null || evt.newIndex == null) return
+      const movedItem = tasks.items.splice(evt.oldIndex, 1)[0]
+      if (!movedItem) return
+      tasks.items.splice(evt.newIndex, 0, movedItem)
+      await tasks.reorder(
+        tasks.items.map((t, i) => ({ id: t.id, position: i + 1 })),
+        date.value
+      )
+    },
+  })
+
+  // Store it so we don’t re-initialize
+  ;(taskList.value as any)._sortable = sortable
+})
+
+onMounted(async () => {
+  await nextTick()
   if (!taskList.value) return
 
   Sortable.create(taskList.value, {
     animation: 150,
+    draggable: '.task-row',
     handle: '.drag-handle',
-    onEnd: async (evt: { oldIndex?: number; newIndex?: number }) => {
+    ghostClass: 'sortable-ghost',
+    chosenClass: 'sortable-chosen',
+    forceFallback: true,
+    fallbackOnBody: true,
+    delayOnTouchOnly: true,
+    delay: 120,
+    async onEnd(evt: { oldIndex?: number | null; newIndex?: number | null }) {
       if (evt.oldIndex == null || evt.newIndex == null) return
 
-      const movedItem = tasks.items.splice(evt.oldIndex, 1)[0]
-      if (!movedItem) return
+      const moved = tasks.items.splice(evt.oldIndex, 1)[0]
+      if (!moved) return
+      tasks.items.splice(evt.newIndex, 0, moved)
 
-      tasks.items.splice(evt.newIndex, 0, movedItem)
-
-      const reordered = tasks.items.map((t, index) => ({
-        id: t.id,
-        position: index + 1,
-      }))
-
-      await tasks.reorder(reordered)
+      await tasks.reorder(
+        tasks.items.map((t, i) => ({ id: t.id, position: i + 1 })),
+        date.value
+      )
     },
   })
 })

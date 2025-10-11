@@ -1,0 +1,8 @@
+/* custom helpers */
+.task-row {
+  user-select: none;
+}
+
+.drag-handle {
+  touch-action: none;
+}

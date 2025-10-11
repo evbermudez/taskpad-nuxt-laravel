@@ -10,3 +10,18 @@
 @source "../components/**/*.{vue,ts}";
 @source "../composables/**/*.{ts,js}";
 @source "../plugins/**/*.{ts,js}";
+
+
+@layer utilities {
+    .task-row { @apply select-none; }
+    .drag-handle { @apply touch-none; }
+
+    .sortable-ghost {
+        opacity: 0.6;
+        background-color: rgba(0, 0, 0, 0.05);
+    }
+
+    .sortable-chosen {
+        outline: 2px dashed var(--ui-ring-color, rgba(59, 130, 246, 0.5));
+    }
+}
