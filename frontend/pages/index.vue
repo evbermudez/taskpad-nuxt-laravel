@@ -7,12 +7,101 @@
     <!-- Main column -->
     <section class="flex flex-col min-h-[calc(100dvh-3.5rem)]">
       <!-- Top controls -->
-      <div class="p-4 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center gap-3">
+      <div
+        class="p-4 border-b border-black/10 dark:border-white/10 flex flex-wrap items-center gap-3
+              sticky top-14 bg-white/80 dark:bg-gray-900/80 backdrop-blur z-10"
+      >
+        <!-- Date picker -->
         <UInput v-model="date" type="date" class="w-48" />
-        <USelect v-model="sort" :options="sortOpts" class="w-40" @change="load" />
-        <USelect v-model="dir"  :options="dirOpts"  class="w-28" @change="load" />
-        <div class="ms-auto text-sm opacity-60" v-if="q">
-          Showing {{ tasks.items.length }} result(s) for “{{ q }}”
+
+        <!-- Desktop filters -->
+        <div class="hidden sm:flex items-center gap-3">
+          <!-- Sort -->
+          <SelectRoot v-model="sort">
+            <SelectTrigger class="border rounded px-3 py-1.5 text-sm bg-white dark:bg-gray-800">
+              <SelectValue placeholder="Sort by" />
+            </SelectTrigger>
+            <SelectContent class="border rounded-md bg-white dark:bg-gray-800 shadow-md" :position="'popper'" :side-offset="4">
+              <SelectViewport>
+                <SelectGroup>
+                  <SelectLabel class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Sort</SelectLabel>
+                  <SelectItem
+                    v-for="opt in sortOpts"
+                    :key="opt.value"
+                    :value="opt.value"
+                    class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    {{ opt.label }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectViewport>
+            </SelectContent>
+          </SelectRoot>
+
+          <!-- Direction -->
+          <SelectRoot v-model="dir">
+            <SelectTrigger class="border rounded px-3 py-1.5 text-sm bg-white dark:bg-gray-800">
+              <SelectValue placeholder="Direction" />
+            </SelectTrigger>
+            <SelectContent class="border rounded-md bg-white dark:bg-gray-800 shadow-md" :position="'popper'" :side-offset="4">
+              <SelectViewport>
+                <SelectGroup>
+                  <SelectLabel class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Order</SelectLabel>
+                  <SelectItem
+                    v-for="opt in dirOpts"
+                    :key="opt.value"
+                    :value="opt.value"
+                    class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    {{ opt.label }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectViewport>
+            </SelectContent>
+          </SelectRoot>
+        </div>
+
+        <!-- Mobile “Options” menu -->
+        <div class="sm:hidden">
+          <SelectRoot>
+            <SelectTrigger class="border rounded px-3 py-1.5 text-sm bg-white dark:bg-gray-800 w-32 flex items-center gap-1.5">
+              <span class="iconify i-heroicons-funnel size-4 text-gray-500 dark:text-gray-400" />
+              <SelectValue placeholder="Options" />
+            </SelectTrigger>
+            <SelectContent class="border rounded-md bg-white dark:bg-gray-800 shadow-md" :position="'popper'" :side-offset="4">
+              <SelectViewport>
+                <SelectGroup>
+                  <SelectLabel class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Sort</SelectLabel>
+                  <SelectItem
+                    v-for="opt in sortOpts"
+                    :key="opt.value"
+                    :value="opt.value"
+                    @click="sort = opt.value; load()"
+                    class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    {{ opt.label }}
+                  </SelectItem>
+                </SelectGroup>
+                <SelectGroup>
+                  <SelectLabel class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400 mt-2">Order</SelectLabel>
+                  <SelectItem
+                    v-for="opt in dirOpts"
+                    :key="opt.value"
+                    :value="opt.value"
+                    @click="dir = opt.value; load()"
+                    class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700"
+                  >
+                    {{ opt.label }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectViewport>
+            </SelectContent>
+          </SelectRoot>
+        </div>
+
+        <!-- Result info -->
+        <div class="ms-auto text-sm opacity-60 truncate max-w-full">
+          <span v-if="q">Showing {{ tasks.items.length }} result(s) for “{{ q }}”</span>
         </div>
       </div>
 
@@ -38,6 +127,16 @@
 </template>
 
 <script setup lang="ts">
+import {
+  SelectRoot,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectViewport,
+  SelectGroup,
+  SelectItem,
+  SelectLabel
+} from 'reka-ui'
 import { useEventBus, watchDebounced } from '@vueuse/core'
 import { useTasks } from '@/stores/tasks'
 import TaskComposer from '@/components/TaskComposer.vue'
@@ -55,12 +154,13 @@ const q     = ref('')
 const sort = ref<'position' | 'priority' | 'created_at'>('position')
 const dir  = ref<'asc' | 'desc'>('asc')
 
-const sortOpts = [
+const sortOpts: { label: string; value: 'position' | 'priority' | 'created_at' }[] = [
   { label: 'Position', value: 'position' },
   { label: 'Priority', value: 'priority' },
   { label: 'Created',  value: 'created_at' },
 ]
-const dirOpts = [
+
+const dirOpts: { label: string; value: 'asc' | 'desc' }[] = [
   { label: 'Asc', value: 'asc' },
   { label: 'Desc', value: 'desc' },
 ]

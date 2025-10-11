@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-dvh bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
-    <!-- Header -->
-    <header class="sticky top-0 z-20 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-black/10">
+    <!-- HEADER -->
+    <header class="fixed top-0 inset-x-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-black/10">
       <div class="mx-auto max-w-6xl px-4 h-14 flex items-center gap-3">
         <!-- Mobile sidebar toggle -->
         <DialogRoot v-model:open="sidebarOpen">
@@ -17,7 +17,7 @@
           <DialogPortal>
             <DialogOverlay class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
             <DialogContent
-              class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-xl p-4 overflow-y-auto"
+              class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-xl p-4 overflow-y-auto z-50"
               @click.stop
             >
               <DialogTitle class="sr-only">Sidebar</DialogTitle>
@@ -46,8 +46,7 @@
             id="global-search"
             class="w-full rounded-md border border-black/10 dark:border-gray-700 px-3 py-2 text-sm
                   bg-white/90 dark:bg-gray-800/90 placeholder:text-gray-400 dark:placeholder:text-gray-500
-                  focus-within:ring-2 focus-within:ring-primary/40 focus-within:ring-offset-0
-                  [--ui-ring-color:transparent] [--ui-ring-inset:0] transition-colors duration-150"
+                  focus-within:ring-2 focus-within:ring-primary/40 transition-colors duration-150"
             @update:model-value="val => bus.emit((val ?? '').trim())"
           />
         </div>
@@ -83,15 +82,21 @@
       </div>
     </header>
 
-    <!-- Body -->
-    <div class="mx-auto max-w-6xl grid md:grid-cols-[260px_1fr] gap-0">
-      <aside class="hidden md:block border-r border-black/10 bg-white/70 dark:bg-gray-900/70">
-        <slot name="sidebar" />
-      </aside>
+    <!-- BODY -->
+    <div class="pt-14"> <!-- 👈 pushes below fixed header -->
+      <div class="mx-auto max-w-6xl grid md:grid-cols-[260px_1fr] gap-0">
+        <!-- Sidebar (desktop) -->
+        <aside class="hidden md:block border-r border-black/10 bg-white/70 dark:bg-gray-900/70">
+          <div class="sticky top-0 h-[calc(100dvh-3.5rem)] overflow-y-auto">
+            <slot name="sidebar" />
+          </div>
+        </aside>
 
-      <main class="bg-white dark:bg-gray-900">
-        <slot />
-      </main>
+        <!-- Main content -->
+        <main class="bg-white dark:bg-gray-900 min-h-[calc(100dvh-3.5rem)]">
+          <slot />
+        </main>
+      </div>
     </div>
   </div>
 </template>
