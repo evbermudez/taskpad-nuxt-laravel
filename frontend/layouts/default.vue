@@ -2,7 +2,7 @@
   <div class="min-h-dvh bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
     <!-- HEADER -->
     <header class="fixed top-0 inset-x-0 z-40 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-black/10">
-      <div class="mx-auto max-w-6xl px-4 h-14 flex items-center gap-3">
+      <div class="mx-auto max-w-6xl px-4 h-14 flex items-center justify-between gap-3">
         <!-- Mobile sidebar toggle -->
         <DialogRoot v-model:open="sidebarOpen">
           <DialogTrigger as-child>
@@ -38,16 +38,14 @@
             placeholder="Search tasks…"
             variant="none"
             id="global-search"
-            class="w-full rounded-md border border-black/10 dark:border-gray-700 px-3 py-2 text-sm
+            icon="i-lucide-search" 
+            class="w-full rounded-md border border-black/10 dark:border-gray-700 text-sm
                   bg-white/90 dark:bg-gray-800/90 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             @update:model-value="val => bus.emit((val ?? '').trim())"
-          >
-            <template #leading>
-              <Search class="size-4 text-gray-500 dark:text-gray-400" />
-            </template>
-          </UInput>
+          />
         </div>
 
+        <div class="flex items-center gap-3 ml-auto">
         <!-- Theme toggle -->
         <ClientOnly>
           <UButton variant="ghost" @click="toggleDark()" class="shrink-0">
@@ -74,6 +72,7 @@
             <NuxtLink to="/login" class="text-blue-500 hover:underline text-sm">Login</NuxtLink>
           </template>
         </ClientOnly>
+        </div>
       </div>
     </header>
 
