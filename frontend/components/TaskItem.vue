@@ -2,7 +2,22 @@
   <UCard :ui="{ body: 'p-3' }" class="group">
     <div class="flex items-center gap-3">
       <!-- Checkbox -->
-      <UCheckbox :model-value="task.is_done" @update:model-value="onCheck" />
+      <CheckboxRoot
+        :checked="task.is_done"
+        @update:checked="onCheck"
+        class="size-5 shrink-0 grid place-items-center rounded-sm
+              border border-gray-400 dark:border-gray-600
+              bg-white dark:bg-gray-800
+              data-[state=checked]:bg-gray-900
+              transition-colors focus-visible:outline-2
+              focus-visible:outline-offset-2 focus-visible:outline-primary"
+      >
+        <CheckboxIndicator>
+          <Check
+            class="size-3.5 text-white dark:text-white stroke-[4]"
+          />
+        </CheckboxIndicator>
+      </CheckboxRoot>
 
       <!-- Task content -->
       <div class="flex-1">
@@ -73,6 +88,8 @@
 import { useTasks } from '@/stores/tasks'
 import type { Task } from '@/stores/tasks'
 import {
+  CheckboxRoot,
+  CheckboxIndicator,
   DialogClose,
   DialogContent,
   DialogDescription,
@@ -82,6 +99,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from 'reka-ui'
+import { Check } from 'lucide-vue-next'
 
 const tasks = useTasks()
 const props = defineProps<{ task: Task }>()
