@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\API\TaskController;
+use App\Http\Controllers\Api\TaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,14 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/me', [AuthController::class, 'me']);
-
-    Route::get('/tasks', [TaskController::class,'index']);
-    Route::post('/tasks', [TaskController::class,'store']);
-    Route::patch('/tasks/{task}', [TaskController::class,'update']);
-    Route::delete('/tasks/{task}', [TaskController::class,'destroy']);
-
-    Route::post('/tasks/{task}/toggle', [TaskController::class,'toggle']);
-    Route::post('/tasks/reorder', [TaskController::class,'reorder']);
-    Route::get('/search', [TaskController::class,'search']);
+    Route::apiResource('tasks', TaskController::class)->only(['index','store','update','destroy']);
+    Route::post('tasks/{task}/toggle', [TaskController::class, 'toggle']);
+    Route::post('tasks/reorder', [TaskController::class, 'reorder']);
+    Route::get('search', [TaskController::class, 'search']);
+    Route::get('me', [AuthController::class, 'me']);
 });
