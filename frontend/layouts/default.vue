@@ -6,12 +6,9 @@
         <!-- Mobile sidebar toggle -->
         <DialogRoot v-model:open="sidebarOpen">
           <DialogTrigger as-child>
-            <UButton
-              icon="i-heroicons-bars-3"
-              variant="ghost"
-              class="md:hidden"
-              aria-label="Toggle sidebar"
-            />
+            <UButton variant="ghost" class="md:hidden" aria-label="Toggle sidebar">
+              <Menu class="size-5" />
+            </UButton>
           </DialogTrigger>
 
           <DialogPortal>
@@ -23,12 +20,9 @@
               <DialogTitle class="sr-only">Sidebar</DialogTitle>
               <slot name="sidebar" />
               <DialogClose as-child>
-                <UButton
-                  icon="i-heroicons-x-mark"
-                  variant="ghost"
-                  class="absolute top-2 right-2"
-                  aria-label="Close sidebar"
-                />
+                <UButton variant="ghost" class="absolute top-2 right-2" aria-label="Close sidebar">
+                  <X class="size-5" />
+                </UButton>
               </DialogClose>
             </DialogContent>
           </DialogPortal>
@@ -45,23 +39,24 @@
             variant="none"
             id="global-search"
             class="w-full rounded-md border border-black/10 dark:border-gray-700 px-3 py-2 text-sm
-                  bg-white/90 dark:bg-gray-800/90 placeholder:text-gray-400 dark:placeholder:text-gray-500
-                  focus-within:ring-2 focus-within:ring-primary/40 transition-colors duration-150"
+                  bg-white/90 dark:bg-gray-800/90 placeholder:text-gray-400 dark:placeholder:text-gray-500"
             @update:model-value="val => bus.emit((val ?? '').trim())"
-          />
+          >
+            <template #leading>
+              <Search class="size-4 text-gray-500 dark:text-gray-400" />
+            </template>
+          </UInput>
         </div>
 
         <!-- Theme toggle -->
         <ClientOnly>
-          <UButton
-            variant="ghost"
-            :icon="isDark ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"
-            @click="toggleDark()"
-            class="shrink-0"
-          />
+          <UButton variant="ghost" @click="toggleDark()" class="shrink-0">
+            <Sun v-if="isDark" class="size-5" />
+            <Moon v-else class="size-5" />
+          </UButton>
         </ClientOnly>
 
-        <!-- User info -->
+        <!-- User info -->  
         <ClientOnly>
           <template v-if="auth.user">
             <span class="hidden sm:inline text-sm opacity-80">👋 {{ auth.user.name }}</span>
@@ -113,6 +108,7 @@ import {
 } from 'reka-ui'
 import { useAuth } from '@/stores/auth'
 import { useDark, useToggle, useEventBus } from '@vueuse/core'
+import { Menu, X, Sun, Moon, Search } from 'lucide-vue-next'
 
 const auth = useAuth()
 const isDark = useDark()

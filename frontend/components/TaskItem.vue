@@ -59,10 +59,11 @@
           <UButton
             color="error"
             variant="ghost"
-            icon="i-heroicons-trash"
             class="opacity-0 group-hover:opacity-100 transition-opacity"
             @click.stop
-          />
+          >
+            <Trash2 class="size-5 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
+          </UButton>
         </DialogTrigger>
 
         <DialogPortal>
@@ -112,7 +113,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from 'reka-ui'
-import { Check, GripVertical } from 'lucide-vue-next'
+import { Check, GripVertical, Trash2 } from 'lucide-vue-next'
 
 const tasks = useTasks()
 const props = defineProps<{ task: Task }>()

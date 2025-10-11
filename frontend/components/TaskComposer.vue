@@ -28,12 +28,8 @@
     </SelectRoot>
 
     <!-- Add -->
-    <UButton
-      type="submit"
-      icon="i-heroicons-plus-20-solid"
-      :loading="pending"
-    >
-      Add
+    <UButton type="submit" :loading="pending" :disabled="pending || !statement.trim()" class="rounded-md inline-flex items-center gap-1.5">
+      <Plus class="size-4" /> Add
     </UButton>
 
     <!-- Error -->
@@ -47,6 +43,7 @@ import {
   SelectContent, SelectViewport, SelectGroup,
   SelectItem, SelectLabel
 } from 'reka-ui'
+import { Plus } from 'lucide-vue-next'
 import { useTasks } from '@/stores/tasks'
 
 const props = defineProps<{
