@@ -1,6 +1,8 @@
 <template>
   <UCard :ui="{ body: 'p-3' }" class="group">
     <div class="flex items-center gap-3">
+
+      <GripVertical class="drag-handle size-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 cursor-grab" />
       <!-- Checkbox -->
       <CheckboxRoot
         :checked="task.is_done"
