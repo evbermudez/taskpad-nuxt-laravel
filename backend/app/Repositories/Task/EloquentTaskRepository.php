@@ -60,14 +60,20 @@ class EloquentTaskRepository implements TaskRepositoryInterface
         return $task->refresh();
     }
 
-    public function reorder(User $user, array $orders): void
+    public function reorder(User $user, Carbon|string $date, array $orders): void
     {
+        $day = $date instanceof Carbon ? $date : Carbon::parse($date);
+
         $map = collect($orders)->keyBy('id');
-        $user->tasks()->whereDate('task_date',$date)->get()->each(function(Task $t) use ($map) {
-            if ($map->has($t->id)) {
-                $t->position = (int)$map[$t->id]['position'];
-                $t->save();
-            }
-        });
+        Task::query()
+            ->where('user_id', $user->id)
+            ->whereDate('task_date', $day)
+            ->get()
+            ->each(function (Task $t) use ($map) {
+                if ($map->has($t->id)) {
+                    $t->position = (int) $map[$t->id]['position'];
+                    $t->save();
+                }
+            });
     }
 }
