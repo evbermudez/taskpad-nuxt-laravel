@@ -114,7 +114,9 @@
           <UAlert icon="i-heroicons-inbox-20-solid" title="No tasks" description="Add your first task below." />
         </div>
         <div v-else class="space-y-2">
-          <TaskItem v-for="t in tasks.items" :key="t.id" :task="t" />
+          <div ref="taskList" class="space-y-2">
+            <TaskItem v-for="t in tasks.items" :key="t.id" :task="t" />
+          </div>
         </div>
       </div>
 
@@ -137,6 +139,8 @@ import {
   SelectItem,
   SelectLabel
 } from 'reka-ui'
+import Sortable from 'sortablejs'
+import { onMounted, ref } from 'vue'
 import { useEventBus, watchDebounced } from '@vueuse/core'
 import { useTasks } from '@/stores/tasks'
 import TaskComposer from '@/components/TaskComposer.vue'
@@ -145,6 +149,7 @@ import SidebarDates from '@/components/SidebarDates.vue'
 
 definePageMeta({ layout: false })
 
+const taskList = ref<HTMLElement | null>(null)
 const tasks = useTasks()
 
 const today = new Date().toISOString().slice(0, 10)
@@ -185,4 +190,28 @@ watch([date, sort, dir], load, { immediate: true })
 const bus = useEventBus<string>('global-search')
 bus.on((value) => { q.value = value ?? '' })
 watchDebounced(q, load, { debounce: 250, maxWait: 600 })
+
+onMounted(() => {
+  if (!taskList.value) return
+
+  Sortable.create(taskList.value, {
+    animation: 150,
+    handle: '.drag-handle',
+    onEnd: async (evt: { oldIndex?: number; newIndex?: number }) => {
+      if (evt.oldIndex == null || evt.newIndex == null) return
+
+      const movedItem = tasks.items.splice(evt.oldIndex, 1)[0]
+      if (!movedItem) return
+
+      tasks.items.splice(evt.newIndex, 0, movedItem)
+
+      const reordered = tasks.items.map((t, index) => ({
+        id: t.id,
+        position: index + 1,
+      }))
+
+      await tasks.reorder(reordered)
+    },
+  })
+})
 </script>
