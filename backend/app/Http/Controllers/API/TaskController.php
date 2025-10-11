@@ -65,7 +65,13 @@ class TaskController extends Controller
 
     public function reorder(ReorderRequest $request)
     {
-        $this->taskRepository->reorder($request->user(), $request->orders);
+        $validated = $request->validated();
+        
+        $this->taskRepository->reorder(
+            $request->user(),
+            $validated['date'],
+            $validated['orders'],
+        );
         return response()->noContent();
     }
 

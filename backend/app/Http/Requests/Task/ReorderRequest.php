@@ -25,7 +25,7 @@ class ReorderRequest extends FormRequest
             'date' => ['required', 'date'],
             'orders' => ['required','array'],
             'orders.*.id' => ['required','integer','exists:tasks,id'],
-            'orders.*.position' => ['required','integer','min:0'],
+            'orders.*.position' => ['required','integer','min:1'],
         ];
     }
 }
