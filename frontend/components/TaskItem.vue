@@ -28,7 +28,12 @@
         </template>
 
         <template v-else>
-          <button class="text-left w-full" @click="startEdit">
+          <button
+            class="text-left w-full"
+            @click="startEdit"
+            :disabled="task.is_done"
+            :class="['text-left w-full', task.is_done && 'cursor-not-allowed opacity-60']"
+          >
             <p :class="task.is_done ? 'line-through opacity-60' : ''">
               {{ task.statement }}
             </p>
