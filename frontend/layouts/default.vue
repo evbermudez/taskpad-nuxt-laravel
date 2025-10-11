@@ -1,23 +1,43 @@
 <template>
   <div class="min-h-dvh bg-gray-100 dark:bg-gray-950 text-gray-900 dark:text-gray-100">
     <!-- Header -->
-    <header
-      class="sticky top-0 z-30 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-black/10 dark:border-white/10"
-    >
+    <header class="sticky top-0 z-20 bg-white/90 dark:bg-gray-900/90 backdrop-blur border-b border-black/10">
       <div class="mx-auto max-w-6xl px-4 h-14 flex items-center gap-3">
-        <!-- Mobile: menu button -->
-        <UButton
-          icon="i-heroicons-bars-3"
-          variant="ghost"
-          class="md:hidden"
-          @click="sidebarOpen = true"
-        />
+        <!-- Mobile sidebar toggle -->
+        <DialogRoot v-model:open="sidebarOpen">
+          <DialogTrigger as-child>
+            <UButton
+              icon="i-heroicons-bars-3"
+              variant="ghost"
+              class="md:hidden"
+              aria-label="Toggle sidebar"
+            />
+          </DialogTrigger>
 
-        <!-- Logo -->
-        <NuxtLink to="/" class="font-semibold text-lg">TaskPad</NuxtLink>
+          <DialogPortal>
+            <DialogOverlay class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
+            <DialogContent
+              class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-xl p-4 overflow-y-auto"
+              @click.stop
+            >
+              <DialogTitle class="sr-only">Sidebar</DialogTitle>
+              <slot name="sidebar" />
+              <DialogClose as-child>
+                <UButton
+                  icon="i-heroicons-x-mark"
+                  variant="ghost"
+                  class="absolute top-2 right-2"
+                  aria-label="Close sidebar"
+                />
+              </DialogClose>
+            </DialogContent>
+          </DialogPortal>
+        </DialogRoot>
+
+        <NuxtLink to="/" class="font-semibold hidden md:block">TaskPad</NuxtLink>
 
         <!-- Top Search -->
-        <div class="hidden sm:flex min-w-[220px] max-w-lg flex-1">
+        <div class="min-w-[220px] max-w-lg flex-1">
           <UInput
             v-model="q"
             placeholder="Search tasks…"
@@ -28,7 +48,7 @@
           />
         </div>
 
-        <!-- Theme toggle -->
+        <!-- Theme + user name -->
         <ClientOnly>
           <UButton
             variant="ghost"
@@ -37,20 +57,18 @@
           />
         </ClientOnly>
 
-        <!-- User -->
         <ClientOnly>
           <template v-if="auth.user">
-            <span class="hidden sm:inline">👋 {{ auth.user.name }}</span>
+            <span>👋 {{ auth.user.name }}</span>
             <UButton
               color="neutral"
               variant="ghost"
               icon="i-heroicons-arrow-right-on-rectangle"
-              @click="handleLogout"
+              @click="handleLogout()"
             >
-              <span class="hidden sm:inline">Logout</span>
+              Logout
             </UButton>
           </template>
-
           <template v-else>
             <NuxtLink to="/login" class="text-blue-500 hover:underline">Login</NuxtLink>
           </template>
@@ -58,69 +76,30 @@
       </div>
     </header>
 
-    <!-- Main Grid -->
-    <div class="mx-auto max-w-6xl grid md:grid-cols-[260px_1fr] min-h-[calc(100dvh-3.5rem)]">
-      <!-- Desktop Sidebar -->
-      <aside
-        class="hidden md:block border-r border-black/10 dark:border-white/10 bg-white/70 dark:bg-gray-900/70"
-      >
-        <div class="sticky top-14 h-[calc(100dvh-3.5rem)] overflow-y-auto p-4">
-          <slot name="sidebar" />
-        </div>
+    <!-- Body -->
+    <div class="mx-auto max-w-6xl grid md:grid-cols-[260px_1fr] gap-0">
+      <aside class="hidden md:block border-r border-black/10 bg-white/70 dark:bg-gray-900/70">
+        <slot name="sidebar" />
       </aside>
 
-      <!-- Page Content -->
-      <main class="bg-white dark:bg-gray-900 min-w-0">
+      <main class="bg-white dark:bg-gray-900">
         <slot />
       </main>
     </div>
-
-    <!-- Mobile Sidebar Drawer -->
-    <UModal v-model="sidebarOpen" fullscreen :overlay="true" :ui="{ base: 'p-4' }">
-      <template #body>
-        <div class="bg-white dark:bg-gray-900 h-full overflow-y-auto">
-          <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">Menu</h2>
-            <UButton
-              icon="i-heroicons-x-mark"
-              variant="ghost"
-              @click="sidebarOpen = false"
-            />
-          </div>
-
-          <!-- Sidebar content -->
-          <slot name="sidebar" />
-
-          <!-- Mobile search -->
-          <div class="mt-6">
-            <UInput
-              v-model="q"
-              placeholder="Search tasks…"
-              class="w-full border border-black/10 dark:border-gray-700 p-2"
-              @input="broadcastSearch"
-              variant="outline"
-              id="global-search-mobile"
-            />
-          </div>
-
-          <!-- Mobile logout -->
-          <div v-if="auth.user" class="mt-6 flex justify-end">
-            <UButton
-              color="neutral"
-              variant="outline"
-              icon="i-heroicons-arrow-right-on-rectangle"
-              @click="handleLogout"
-            >
-              Logout
-            </UButton>
-          </div>
-        </div>
-      </template>
-    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
+import {
+  DialogRoot,
+  DialogTrigger,
+  DialogPortal,
+  DialogOverlay,
+  DialogContent,
+  DialogClose,
+  DialogTitle
+} from 'reka-ui'
+
 import { useAuth } from '@/stores/auth'
 import { useDark, useToggle, useEventBus } from '@vueuse/core'
 
@@ -129,12 +108,11 @@ const isDark = useDark()
 const toggleDark = useToggle(isDark)
 const q = ref('')
 const sidebarOpen = ref(false)
-
 const bus = useEventBus<string>('global-search')
+
 function broadcastSearch() {
   bus.emit(q.value)
 }
-
 async function handleLogout() {
   await auth.logout()
   await navigateTo('/login')
