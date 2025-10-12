@@ -238,6 +238,8 @@ watchDebounced(query, load, { debounce: 250, maxWait: 600 })
 watchEffect(() => {
   if (!taskList.value || !tasks.items.length) return
 
+  if (search.query.trim()) return
+
   if ((taskList.value as any)._sortable) return
 
   const sortable = Sortable.create(taskList.value, {
