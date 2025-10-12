@@ -31,25 +31,6 @@
       />
     </template>
 
-    <!-- Priority -->
-    <SelectRoot v-model="priorityStr" :disabled="pending">
-      <SelectTrigger
-        class="border rounded px-3 py-1.5 text-sm bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-700"
-      >
-        <SelectValue placeholder="Priority" />
-      </SelectTrigger>
-      <SelectContent class="border rounded-md bg-white dark:bg-gray-800 shadow-md">
-        <SelectViewport>
-          <SelectGroup>
-            <SelectLabel class="px-2 py-1 text-xs text-gray-500 dark:text-gray-400">Priority</SelectLabel>
-            <SelectItem value="1" class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">High</SelectItem>
-            <SelectItem value="2" class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">Medium</SelectItem>
-            <SelectItem value="3" class="px-3 py-1.5 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700">Low</SelectItem>
-          </SelectGroup>
-        </SelectViewport>
-      </SelectContent>
-    </SelectRoot>
-
     <!-- Add -->
     <UButton
       type="submit"
@@ -86,7 +67,6 @@ const hasItems = computed(() => props.hasItems ?? true)
 
 const tasks = useTasks()
 const statement = ref('')
-const priorityStr = ref<'1' | '2' | '3'>('2') // default Medium
 const pending = ref(false)
 const err = ref('')
 
@@ -100,11 +80,9 @@ async function onSubmit() {
   try {
     await tasks.create({
       statement: s,
-      task_date: props.date,
-      priority: Number(priorityStr.value)
+      task_date: props.date
     })
     statement.value = ''
-    priorityStr.value = '2'
   } catch (e: any) {
     err.value = e?.data?.message || e?.message || 'Could not add task.'
   } finally {

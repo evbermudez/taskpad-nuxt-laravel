@@ -6,16 +6,9 @@ export type Task = {
   id: number
   statement: string
   task_date: string
-  priority: number
   position: number
   is_done: boolean
 }
-
-export const PRIORITY_OPTIONS = [
-  { label: 'High', value: 1 },
-  { label: 'Medium', value: 2 },
-  { label: 'Low', value: 3 }
-]
 
 export const useTasks = defineStore('tasks', () => {
   const { api } = useApi()
@@ -43,7 +36,7 @@ export const useTasks = defineStore('tasks', () => {
     }
   }
 
-  async function create(payload: { statement: string; task_date: string; priority?: number }) {
+  async function create(payload: { statement: string; task_date: string }) {
     try {
       const res = await api<Task | { data: Task }>('/tasks', { method: 'POST', body: payload })
       items.value.unshift(unwrap(res))

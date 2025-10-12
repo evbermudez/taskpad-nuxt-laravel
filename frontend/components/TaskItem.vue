@@ -1,5 +1,7 @@
 <template>
-  <UCard :ui="{ body: 'p-3' }" class="task-row group">
+  <UCard :ui="{ body: 'p-3' }"
+    class="task-row group transition-colors"
+  >
     <div class="flex items-center gap-3">
 
       <div
@@ -30,7 +32,9 @@
       <!-- Task content -->
       <div class="flex-1">
         <template v-if="editing">
-          <UInput v-model="draft" @keyup.enter="save" @blur="save" autofocus />
+          <div class="flex flex-col sm:flex-row gap-2">
+            <UInput v-model="draft" class="flex-1" @keyup.enter="save" autofocus />
+          </div>
         </template>
 
         <template v-else>
@@ -42,12 +46,6 @@
           >
             <p :class="task.is_done ? 'line-through opacity-60' : ''">
               {{ task.statement }}
-            </p>
-            <p class="text-xs text-gray-500">
-              Priority:
-              <UBadge :color="badgeColor(task.priority)" variant="soft">
-                {{ labelPriority(task.priority) }}
-              </UBadge>
             </p>
           </button>
         </template>
@@ -67,9 +65,7 @@
         </DialogTrigger>
 
         <DialogPortal>
-          <DialogOverlay
-            class="fixed inset-0 bg-black/50 data-[state=open]:animate-fade-in data-[state=closed]:animate-fade-out"
-          />
+          <DialogOverlay class="fixed inset-0 bg-black/50 backdrop-blur-sm" />
 
           <DialogContent
             class="fixed left-1/2 top-1/2 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white p-4 shadow-lg ring-1 ring-black/10 dark:bg-gray-900 dark:ring-white/10"
@@ -120,14 +116,6 @@ const props = defineProps<{ task: Task }>()
 const editing = ref(false)
 const draft = ref(props.task.statement)
 
-function labelPriority(p: number) {
-  return p === 1 ? 'High' : p === 2 ? 'Medium' : 'Low'
-}
-
-function badgeColor(p: number): 'error' | 'warning' | 'neutral' {
-  return p === 1 ? 'error' : p === 2 ? 'warning' : 'neutral'
-}
-
 async function onCheck(_: boolean | 'indeterminate') {
   await tasks.toggle(props.task.id)
 }
@@ -139,7 +127,9 @@ function startEdit() {
 
 async function save() {
   if (!editing.value) return
-  await tasks.update(props.task.id, { statement: draft.value.trim() })
+  await tasks.update(props.task.id, {
+    statement: draft.value.trim()
+  })
   editing.value = false
 }
 

@@ -37,7 +37,6 @@ class EloquentTaskRepository implements TaskRepositoryInterface
     public function create(User $user, array $data): Task
     {
         $data['user_id'] = $user->id;
-        $data['priority'] = $data['priority'] ?? 2;
         $data['position'] = $data['position'] ?? (($user->tasks()->max('position') ?? 0) + 1);
         return Task::create($data);
     }

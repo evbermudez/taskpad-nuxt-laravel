@@ -16,14 +16,12 @@ class Task extends Model
         'user_id',
         'statement',
         'task_date',
-        'priority',
         'position',
         'is_done',
     ];
 
     protected $casts = [
         'task_date' => 'date:Y-m-d',
-        'priority'  => 'integer',
         'position'  => 'integer',
         'is_done'   => 'boolean',
     ];
