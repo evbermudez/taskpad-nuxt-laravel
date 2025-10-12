@@ -1,6 +1,12 @@
 <template>
   <UCard :ui="{ body: 'p-3' }"
-    class="task-row group transition-colors"
+    class="task-row group transition-colors rounded-xl border
+           border-black/5 dark:border-white/10
+           bg-white/90 dark:bg-gray-900/80
+           hover:bg-white dark:hover:bg-gray-800/80"
+    :class="task.is_done
+      ? 'bg-gray-50 dark:bg-gray-800/70'
+      : ''"
   >
     <div class="flex items-center gap-3">
 
@@ -13,19 +19,16 @@
 
       <!-- Checkbox -->
       <CheckboxRoot
-        :checked="task.is_done"
-        @update:checked="onCheck"
+        :checked="props.task.is_done"
+        @click.stop="toggleTask"
         class="size-5 shrink-0 grid place-items-center rounded-sm
               border border-gray-400 dark:border-gray-600
               bg-white dark:bg-gray-800
               data-[state=checked]:bg-gray-900
-              transition-colors focus-visible:outline-2
-              focus-visible:outline-offset-2 focus-visible:outline-primary"
+              transition-colors focus-visible:outline-none"
       >
         <CheckboxIndicator>
-          <Check
-            class="size-3.5 text-white dark:text-white stroke-[4]"
-          />
+          <Check class="size-3.5 text-white dark:text-white stroke-[4]" />
         </CheckboxIndicator>
       </CheckboxRoot>
 
@@ -116,7 +119,7 @@ const props = defineProps<{ task: Task }>()
 const editing = ref(false)
 const draft = ref(props.task.statement)
 
-async function onCheck(_: boolean | 'indeterminate') {
+async function toggleTask() {
   await tasks.toggle(props.task.id)
 }
 
