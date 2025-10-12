@@ -66,7 +66,7 @@ Then open http://localhost:3000
 
 ## Backend Success Metrics
 
-TaskPad follows Laravel’s best practices for maintainability and robustness.
+We expect the API to adhere to Laravel’s conventions, enforce consistency, and remain testable:
 
 ### Resourceful Endpoints & Controllers
 
@@ -113,8 +113,73 @@ Auto-fix:
 sail php ./vendor/bin/pint --preset=psr12
 ```
 
+## Frontend Success Metrics
+
+We expect the Nuxt 3 interface to be type-safe, visually consistent, and maintain a clear component hierarchy.
+
+### TypeScript First
+
+All components, composables, and stores are written in TypeScript for strong type safety and better developer experience.
+
+Run type checks:
+
+```
+pnpm typecheck
+```
+
+### Utility-First CSS
+
+The UI uses Tailwind CSS, ensuring consistent spacing, colors, and typography with no custom CSS clutter.
+
+### Modular Component Structure
+
+The project is organized for clarity and reusability:
+
+```
+/components   → UI and layout building blocks
+/composables  → Reusable logic (e.g. useApi)
+/layouts      → Page layouts (default, etc.)
+/stores       → Pinia stores for shared state
+/pages        → Route-based views
+```
+Each component uses `<script setup lang="ts">` and follows Vue’s style guide conventions.
+
+### State Management
+
+Global state is handled with Pinia, replacing event buses or prop drilling.
+
+| Store | Description |
+|:--|:--|
+auth.ts | Handles login, logout, and session restore |
+tasks.ts | Manages fetching, reordering, toggling, and deleting tasks |
+search.ts | Keeps global search query in sync |
+
+### Linting & Formatting
+
+Code style consistency is enforced with ESLint.
+
+Run lint:
+```
+pnpm lint
+```
+
+Auto-fix:
+```
+pnpm lint --fix
+```
+
+### Build & Dev Commands
+
+Start development:
+
+```
+pnpm dev
+```
+
 ## Notes
 
 - Drag-drop order is saved in `position`
+- Drag-drop task reordering is disabled when a search query is active.
 -	Uses Laravel Sanctum for SPA authentication
--	Fully type-safe API client with $fetch and Pinia
+- Global search is fully reactive via the search store.
+- Dark mode persists between sessions using VueUse composables.
