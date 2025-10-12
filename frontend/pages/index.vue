@@ -172,12 +172,12 @@ const today = new Date().toISOString().slice(0, 10)
 const date  = ref(today)
 const q     = ref('')
 
-const sort = ref<'position' | 'priority' | 'created_at'>('position')
+const sort = ref<'position' | 'created_at'>('position')
 const dir  = ref<'asc' | 'desc'>('asc')
 
-const sortOpts: { label: string; value: 'position' | 'priority' | 'created_at' }[] = [
+const sortOpts: { label: string; value: 'position' | 'created_at' }[] = [
   { label: 'Position', value: 'position' },
-  { label: 'Priority', value: 'priority' },
+  { label: 'Created', value: 'created_at' },
   { label: 'Created',  value: 'created_at' },
 ]
 
