@@ -49,7 +49,7 @@ class TaskController extends Controller
     {
         $this->authorize('delete', $task);
         $this->repo->delete($task);
-        return response()->json(['message' => 'Deleted']);
+        return response()->noContent();
     }
 
     public function toggle(Request $request, Task $task)
@@ -69,7 +69,7 @@ class TaskController extends Controller
         ]);
 
         $this->repo->reorder($request->user(), $data['date'], $data['orders']);
-        return response()->json(['message' => 'Reordered']);
+        return response()->noContent();
     }
 
     public function search(Request $request)
