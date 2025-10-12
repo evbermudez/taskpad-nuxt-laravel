@@ -178,7 +178,6 @@ const dir  = ref<'asc' | 'desc'>('asc')
 const sortOpts: { label: string; value: 'position' | 'created_at' }[] = [
   { label: 'Position', value: 'position' },
   { label: 'Created', value: 'created_at' },
-  { label: 'Created',  value: 'created_at' },
 ]
 
 const dirOpts: { label: string; value: 'asc' | 'desc' }[] = [
