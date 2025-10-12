@@ -10,11 +10,12 @@
         class="flex-1 w-full min-w-[260px] text-base rounded-md border border-gray-300 dark:border-gray-700
                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
                placeholder:text-gray-400 dark:placeholder:text-gray-500
-               focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-colors
-               px-3 py-3 resize-none"
+               focus:ring-1 focus:ring-primary/40 focus:border-primary/40 transition-colors
+               p-3 resize-none"
         @keydown.ctrl.enter.prevent="onSubmit"
         @keydown.meta.enter.prevent="onSubmit"
         autofocus
+        id="statement-textinput"
       />
     </template>
     <template v-else>
@@ -25,9 +26,10 @@
         class="flex-1 min-w-[220px] w-full text-sm rounded-md border border-gray-300 dark:border-gray-700
                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
                placeholder:text-gray-400 dark:placeholder:text-gray-500
-               focus-within:ring-2 focus-within:ring-primary/40"
+               focus-within:ring-2 focus-within:ring-primary/40 px-3"
         @keyup.enter.prevent="onSubmit"
         autofocus
+        id="statement-input"
       />
     </template>
 

@@ -32,17 +32,24 @@
         <NuxtLink to="/" class="font-semibold hidden md:block">TaskPad</NuxtLink>
 
         <!-- Top Search -->
-        <div class="flex-1 min-w-[220px] max-w-lg">
+        <div class="relative flex-1 min-w-[220px] max-w-lg">
           <UInput
             v-model="q"
+            id="global-search"
             placeholder="Search tasks…"
             variant="none"
-            id="global-search"
-            icon="i-lucide-search" 
-            class="w-full rounded-md border border-black/10 dark:border-gray-700 text-sm
-                  bg-white/90 dark:bg-gray-800/90 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+            class="w-full rounded-md border border-black/10 dark:border-gray-700
+                  bg-white/90 dark:bg-gray-800/90
+                  text-sm placeholder:text-gray-500 dark:placeholder:text-gray-400
+                  pl-8 pr-3 py-2
+                  focus:outline-none focus:ring-0 focus-visible:ring-0 ring-0 shadow-none"
             @update:model-value="val => bus.emit((val ?? '').trim())"
-          />
+          >
+            <!-- left icon -->
+            <template #leading>
+              <Search class="pointer-events-none absolute -left-6 top-1/2 -translate-y-1/2 size-4 text-gray-500 dark:text-gray-400" />
+            </template>
+          </UInput>
         </div>
 
         <div class="flex items-center gap-3 ml-auto">

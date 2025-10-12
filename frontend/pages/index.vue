@@ -12,7 +12,13 @@
               sticky top-14 bg-white/80 dark:bg-gray-900/80 backdrop-blur z-10"
       >
         <!-- Date picker -->
-        <UInput v-model="date" type="date" class="w-48" />
+        <UInput
+          v-model="date"
+          type="date"
+          class="w-48 border border-black/10 dark:border-white/10 outline-none pl-2
+                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
+                placeholder:text-gray-400 dark:placeholder:text-gray-500"
+        />
 
         <!-- Desktop filters -->
         <div class="hidden sm:flex items-center gap-3">
@@ -264,3 +270,11 @@ onMounted(async () => {
   })
 })
 </script>
+
+<style scoped>
+:deep(input:focus),
+:deep(input:active) {
+  outline: none !important;
+  box-shadow: none !important;
+}
+</style>
