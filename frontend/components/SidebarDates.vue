@@ -24,22 +24,27 @@
         {{ d.label }}
       </ToggleGroupItem>
     </ToggleGroupRoot>
+
+    <!-- Load older days -->
+    <UButton
+      variant="ghost"
+      class="w-full justify-center text-xs"
+      @click="showMore"
+    >
+      Older…
+    </UButton>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ToggleGroupRoot, ToggleGroupItem } from 'reka-ui'
 import { ref, watch, computed } from 'vue'
+import { ToggleGroupRoot, ToggleGroupItem } from 'reka-ui'
 
 type DateItem = { label: string; value: string }
 
 const props = defineProps<{ date: string }>()
+const emit = defineEmits<{ (e: 'select', value: string): void }>()
 
-const emit = defineEmits<{
-  select: [value: string]
-}>()
-
-// Keep internal selection synced with parent
 const selected = ref(props.date)
 watch(() => props.date, (v) => { if (v !== selected.value) selected.value = v }, { immediate: true })
 watch(selected, (v) => { if (v && v !== props.date) emit('select', v) })
@@ -47,9 +52,11 @@ watch(selected, (v) => { if (v && v !== props.date) emit('select', v) })
 const today = new Date()
 const iso = (d: Date) => d.toISOString().slice(0, 10)
 
+const visible = ref(14)
+
 const dates = computed<DateItem[]>(() => {
   const out: DateItem[] = []
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < visible.value; i++) {
     const d = new Date(today)
     d.setDate(today.getDate() - i)
     const label =
@@ -57,13 +64,13 @@ const dates = computed<DateItem[]>(() => {
         ? 'Today'
         : i === 1
           ? 'Yesterday'
-          : d.toLocaleDateString(undefined, {
-              weekday: 'long',
-              month: 'long',
-              day: 'numeric'
-            })
+          : d.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })
     out.push({ value: iso(d), label })
   }
   return out
 })
+
+function showMore() {
+  visible.value += 14
+}
 </script>
