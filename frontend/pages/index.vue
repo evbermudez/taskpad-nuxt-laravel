@@ -201,7 +201,6 @@ watchEffect(() => {
   const sortable = Sortable.create(taskList.value, {
     animation: 150,
     draggable: '.task-row',
-    handle: '.drag-handle',
     ghostClass: 'sortable-ghost',
     chosenClass: 'sortable-chosen',
     forceFallback: true,
@@ -229,7 +228,6 @@ onMounted(async () => {
   Sortable.create(taskList.value, {
     animation: 150,
     draggable: '.task-row',
-    handle: '.drag-handle',
     ghostClass: 'sortable-ghost',
     chosenClass: 'sortable-chosen',
     forceFallback: true,

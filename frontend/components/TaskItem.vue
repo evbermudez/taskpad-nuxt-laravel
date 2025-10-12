@@ -3,19 +3,13 @@
     class="task-row group transition-colors rounded-xl border
            border-black/5 dark:border-white/10
            bg-white/90 dark:bg-gray-900/80
-           hover:bg-white dark:hover:bg-gray-800/80"
+           hover:bg-white dark:hover:bg-gray-800/80
+           cursor-grab active:cursor-grabbing select-none"
     :class="task.is_done
       ? 'bg-gray-50 dark:bg-gray-800/70'
       : ''"
   >
     <div class="flex items-center gap-3">
-
-      <div
-        class="drag-handle flex items-center justify-center size-6 rounded hover:bg-gray-100 dark:hover:bg-gray-800 cursor-grab active:cursor-grabbing"
-        aria-label="Drag"
-      >
-        <GripVertical class="size-4 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300" />
-      </div>
 
       <!-- Checkbox -->
       <CheckboxRoot
@@ -112,7 +106,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from 'reka-ui'
-import { Check, GripVertical, Trash2 } from 'lucide-vue-next'
+import { Check, Trash2 } from 'lucide-vue-next'
 
 const tasks = useTasks()
 const props = defineProps<{ task: Task }>()
