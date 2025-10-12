@@ -1,5 +1,6 @@
 <template>
-  <UCard :ui="{ body: 'p-3' }"
+  <UCard
+    :ui="{ body: 'p-3' }"
     class="task-row group transition-colors rounded-xl border
            border-black/5 dark:border-white/10
            bg-white/90 dark:bg-gray-900/80
@@ -10,16 +11,15 @@
       : ''"
   >
     <div class="flex items-center gap-3">
-
       <!-- Checkbox -->
       <CheckboxRoot
         :checked="props.task.is_done"
-        @click.stop="toggleTask"
         class="size-5 shrink-0 grid place-items-center rounded-sm
               border border-gray-400 dark:border-gray-600
               bg-white dark:bg-gray-800
               data-[state=checked]:bg-gray-900
               transition-colors focus-visible:outline-none"
+        @click.stop="toggleTask"
       >
         <CheckboxIndicator>
           <Check class="size-3.5 text-white dark:text-white stroke-[4]" />
@@ -30,16 +30,21 @@
       <div class="flex-1">
         <template v-if="editing">
           <div class="flex flex-col sm:flex-row gap-2">
-            <UInput v-model="draft" class="flex-1" @keyup.enter="save" autofocus />
+            <UInput
+              v-model="draft"
+              class="flex-1"
+              autofocus
+              @keyup.enter="save"
+            />
           </div>
         </template>
 
         <template v-else>
           <button
             class="text-left w-full"
-            @click="startEdit"
             :disabled="task.is_done"
             :class="['text-left w-full', task.is_done && 'cursor-not-allowed opacity-60']"
+            @click="startEdit"
           >
             <p :class="task.is_done ? 'line-through opacity-60' : ''">
               {{ task.statement }}
@@ -77,11 +82,23 @@
 
             <div class="mt-4 flex justify-end gap-2">
               <DialogClose as-child>
-                <UButton variant="outline" class="text-gray-600 dark:text-gray-400 font-semibold">Cancel</UButton>
+                <UButton
+                  variant="outline"
+                  class="text-gray-600 dark:text-gray-400 font-semibold"
+                >
+                  Cancel
+                </UButton>
               </DialogClose>
 
               <DialogClose as-child>
-                <UButton variant="outline" color="error" class="text-gray-600 dark:text-gray-400 font-semibold" @click="doDelete">Delete</UButton>
+                <UButton
+                  variant="outline"
+                  color="error"
+                  class="text-gray-600 dark:text-gray-400 font-semibold"
+                  @click="doDelete"
+                >
+                  Delete
+                </UButton>
               </DialogClose>
             </div>
           </DialogContent>
@@ -92,6 +109,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useTasks } from '@/stores/tasks'
 import type { Task } from '@/stores/tasks'
 import {

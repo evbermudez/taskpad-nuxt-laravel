@@ -6,7 +6,11 @@
         <!-- Mobile sidebar toggle -->
         <DialogRoot v-model:open="sidebarOpen">
           <DialogTrigger as-child>
-            <UButton variant="ghost" class="md:hidden" aria-label="Toggle sidebar">
+            <UButton
+              variant="ghost"
+              class="md:hidden"
+              aria-label="Toggle sidebar"
+            >
               <Menu class="size-5" />
             </UButton>
           </DialogTrigger>
@@ -17,10 +21,16 @@
               class="fixed inset-y-0 left-0 w-64 bg-white dark:bg-gray-900 shadow-xl p-4 overflow-y-auto z-50"
               @click.stop
             >
-              <DialogTitle class="sr-only">Sidebar</DialogTitle>
+              <DialogTitle class="sr-only">
+                Sidebar
+              </DialogTitle>
               <slot name="sidebar" />
               <DialogClose as-child>
-                <UButton variant="ghost" class="absolute top-2 right-2" aria-label="Close sidebar">
+                <UButton
+                  variant="ghost"
+                  class="absolute top-2 right-2"
+                  aria-label="Close sidebar"
+                >
                   <X class="size-5" />
                 </UButton>
               </DialogClose>
@@ -29,13 +39,18 @@
         </DialogRoot>
 
         <!-- Brand -->
-        <NuxtLink to="/" class="font-semibold hidden md:block">TaskPad</NuxtLink>
+        <NuxtLink
+          to="/"
+          class="font-semibold hidden md:block"
+        >
+          TaskPad
+        </NuxtLink>
 
         <!-- Top Search -->
         <div class="relative flex-1 min-w-[220px] max-w-lg mx-auto">
           <UInput
-            v-model="q"
             id="global-search"
+            v-model="q"
             placeholder="Search tasks…"
             variant="none"
             class="w-full rounded-md border border-black/10 dark:border-gray-700
@@ -67,7 +82,7 @@
                   src="https://i.pravatar.cc/100?img=12"
                   alt="User avatar"
                   class="object-cover w-full h-full"
-                />
+                >
                 <div
                   v-else
                   class="flex items-center justify-center w-full h-full text-gray-700 dark:text-gray-300 text-sm font-semibold"
@@ -99,7 +114,7 @@
                     src="https://i.pravatar.cc/100?img=12"
                     alt="User avatar"
                     class="w-10 h-10 rounded-full border border-black/10 dark:border-white/20"
-                  />
+                  >
                   <div>
                     <p class="font-medium text-sm text-gray-800 dark:text-gray-100">
                       {{ auth.user?.name || 'Guest' }}
@@ -110,7 +125,7 @@
                   </div>
                 </div>
 
-                <hr class="border-gray-200 dark:border-gray-700 my-2" />
+                <hr class="border-gray-200 dark:border-gray-700 my-2">
 
                 <!-- Theme toggle -->
                 <UButton
@@ -118,8 +133,14 @@
                   class="w-full justify-start text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
                   @click="toggleDark()"
                 >
-                  <Sun v-if="isDark" class="size-4 mr-2 text-yellow-400" />
-                  <Moon v-else class="size-4 mr-2 text-blue-400" />
+                  <Sun
+                    v-if="isDark"
+                    class="size-4 mr-2 text-yellow-400"
+                  />
+                  <Moon
+                    v-else
+                    class="size-4 mr-2 text-blue-400"
+                  />
                   Toggle theme
                 </UButton>
 
@@ -168,6 +189,8 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
+import {navigateTo } from '#app'
 import {
   DialogRoot,
   DialogTrigger,

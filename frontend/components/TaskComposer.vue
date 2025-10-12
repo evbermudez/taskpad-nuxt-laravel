@@ -1,8 +1,13 @@
 <template>
-  <form @submit.prevent="onSubmit" class="flex gap-2" :class="mode === 'hero' ? 'flex-col' : 'flex-row'">
+  <form
+    class="flex gap-2"
+    :class="mode === 'hero' ? 'flex-col' : 'flex-row'"
+    @submit.prevent="onSubmit"
+  >
     <!-- Statement -->
     <template v-if="mode === 'hero'">
       <textarea
+        id="statement-textinput"
         v-model="statement"
         rows="4"
         placeholder="What do you want to do today?"
@@ -12,14 +17,14 @@
                placeholder:text-gray-400 dark:placeholder:text-gray-500
                focus:ring-1 focus:ring-primary/40 focus:border-primary/40 transition-colors
                p-3 resize-none"
+        autofocus
         @keydown.ctrl.enter.prevent="onSubmit"
         @keydown.meta.enter.prevent="onSubmit"
-        autofocus
-        id="statement-textinput"
       />
     </template>
     <template v-else>
       <UInput
+        id="statement-input"
         v-model="statement"
         :placeholder="hasItems ? 'What else do you want to do?' : 'Add a task…'"
         :disabled="pending"
@@ -27,9 +32,8 @@
                bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100
                placeholder:text-gray-400 dark:placeholder:text-gray-500
                focus-within:ring-2 focus-within:ring-primary/40 px-3"
-        @keyup.enter.prevent="onSubmit"
         autofocus
-        id="statement-input"
+        @keyup.enter.prevent="onSubmit"
       />
     </template>
 
@@ -51,12 +55,17 @@
     </UButton>
 
     <!-- Error -->
-    <p v-if="err" class="text-sm text-red-600">{{ err }}</p>
+    <p
+      v-if="err"
+      class="text-sm text-red-600"
+    >
+      {{ err }}
+    </p>
   </form>
 </template>
 
 <script setup lang="ts">
-import { Plus } from 'lucide-vue-next'
+import { ref, computed } from 'vue'
 import { useTasks } from '@/stores/tasks'
 
 const props = defineProps<{

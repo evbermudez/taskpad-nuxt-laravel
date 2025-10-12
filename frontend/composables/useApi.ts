@@ -1,3 +1,6 @@
+import { useRuntimeConfig, useCookie } from 'nuxt/app'
+import { $fetch } from 'ofetch'
+
 export function useApi() {
   const { public: { apiBase, webBase } } = useRuntimeConfig()
 
@@ -10,7 +13,7 @@ export function useApi() {
       const raw = useCookie<string | null>('XSRF-TOKEN').value
       if (!raw) return
       const token = decodeURIComponent(raw)
-      const headers = new Headers(options.headers as HeadersInit | undefined)
+      const headers = new Headers(options.headers)
       headers.set('X-Requested-With', 'XMLHttpRequest')
       headers.set('Accept', 'application/json')
       headers.set('X-XSRF-TOKEN', token)

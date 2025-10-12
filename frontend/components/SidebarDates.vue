@@ -5,8 +5,8 @@
     </h3>
 
     <ToggleGroupRoot
-      type="single"
       v-model="selected"
+      type="single"
       class="flex flex-col gap-1"
       aria-label="Pick a date"
     >
@@ -29,11 +29,15 @@
 
 <script setup lang="ts">
 import { ToggleGroupRoot, ToggleGroupItem } from 'reka-ui'
+import { ref, watch, computed } from 'vue'
 
 type DateItem = { label: string; value: string }
 
 const props = defineProps<{ date: string }>()
-const emit = defineEmits<{ (e: 'select', value: string): void }>()
+
+const emit = defineEmits<{
+  select: [value: string]
+}>()
 
 // Keep internal selection synced with parent
 const selected = ref(props.date)
