@@ -10,7 +10,7 @@
 <div
   class="p-4 border-b border-black/10 dark:border-white/10
          flex flex-col sm:flex-row sm:flex-wrap gap-3
-         sticky top-14 bg-white/80 dark:bg-gray-900/80 backdrop-blur z-10"
+         sticky top-14 bg-white/80 dark:bg-gray-900/80 backdrop-blur"
 >
   <!-- Date picker -->
   <UInput
