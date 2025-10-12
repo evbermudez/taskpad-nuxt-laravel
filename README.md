@@ -1,5 +1,8 @@
 # TaskPad – Laravel 10 API + Nuxt 3 UI (Monorepo)
 
+![Oct-13-2025 03-35-40](https://github.com/user-attachments/assets/233b8625-ec76-4ca1-9f09-aea444650f10)
+
+
 Simple, fast task manager built in one repo:
 - **Backend** → Laravel 10 (Sail + Sanctum, Repository Pattern, Policies, Form Requests, JsonResources, Pest)
 - **Frontend** → Nuxt 3 (TypeScript, Tailwind CSS, Pinia, Nuxt UI, Lucide Icons)
