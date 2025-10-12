@@ -77,13 +77,15 @@
                 aria-label="User menu"
               >
                 <img
-                  v-if="auth.user"
+                  v-show="!!auth.user"
                   src="https://i.pravatar.cc/100?img=12"
                   alt="User avatar"
                   class="object-cover w-full h-full"
-                >
+                  decoding="async"
+                  loading="lazy"
+                />
                 <div
-                  v-else
+                  v-show="!auth.user"
                   class="flex items-center justify-center w-full h-full text-gray-700 dark:text-gray-300 text-sm font-semibold"
                 >
                   ?
