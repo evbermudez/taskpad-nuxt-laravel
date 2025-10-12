@@ -125,7 +125,7 @@ test('a user can delete their task', function () {
 test('a user can reorder their tasks', function () {
     $tasks = Task::factory()->count(3)->create(['user_id' => $this->user->id, 'task_date' => now()->toDateString()]);
 
-    $orders = $tasks->shuffle()->values()->map(fn($t, $i) => [
+    $orders = $tasks->shuffle()->values()->map(fn ($t, $i) => [
         'id' => $t->id,
         'position' => $i + 1,
     ])->toArray();

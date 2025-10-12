@@ -21,8 +21,8 @@ class TaskResource extends JsonResource
             'priority'  => (int) $this->priority,
             'position'  => (int) $this->position,
             'is_done'   => (bool) $this->is_done,
-            'created_at'=> $this->created_at?->toISOString(),
-            'updated_at'=> $this->updated_at?->toISOString(),
+            'created_at' => $this->created_at?->toISOString(),
+            'updated_at' => $this->updated_at?->toISOString(),
         ];
     }
 }

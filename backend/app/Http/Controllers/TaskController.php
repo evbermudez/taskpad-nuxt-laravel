@@ -11,8 +11,10 @@ use Illuminate\Http\Request;
 
 class TaskController extends Controller
 {
-    public function __construct(private TaskRepositoryInterface $repo) {}
-    
+    public function __construct(private TaskRepositoryInterface $repo)
+    {
+    }
+
     public function index(Request $request)
     {
         $request->validate([
@@ -24,8 +26,8 @@ class TaskController extends Controller
         $items = $this->repo->listByDate(
             $request->user(),
             $request->date,
-            $request->input('sort','position'),
-            $request->input('dir','asc'),
+            $request->input('sort', 'position'),
+            $request->input('dir', 'asc'),
         );
 
         return TaskResource::collection($items);

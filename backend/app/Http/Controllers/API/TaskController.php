@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-
 use App\Models\Task;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\Task\{StoreTaskRequest, UpdateTaskRequest, ReorderRequest};
@@ -66,7 +65,7 @@ class TaskController extends Controller
     public function reorder(ReorderRequest $request)
     {
         $validated = $request->validated();
-        
+
         $this->taskRepository->reorder(
             $request->user(),
             $validated['date'],
