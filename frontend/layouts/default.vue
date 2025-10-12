@@ -83,7 +83,7 @@
                   class="object-cover w-full h-full"
                   decoding="async"
                   loading="lazy"
-                />
+                >
                 <div
                   v-show="!auth.user"
                   class="flex items-center justify-center w-full h-full text-gray-700 dark:text-gray-300 text-sm font-semibold"
