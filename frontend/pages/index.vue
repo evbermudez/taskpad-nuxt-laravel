@@ -183,12 +183,14 @@ import {
 } from 'reka-ui'
 import Sortable from 'sortablejs'
 import { onMounted, ref, nextTick, watchEffect, watch } from 'vue'
-import { useEventBus, watchDebounced } from '@vueuse/core'
 import { useTasks } from '@/stores/tasks'
 import TaskComposer from '@/components/TaskComposer.vue'
 import TaskItem from '@/components/TaskItem.vue'
 import SidebarDates from '@/components/SidebarDates.vue'
 import { definePageMeta } from '#imports'
+import { useSearchStore } from '@/stores/search'
+import { storeToRefs } from 'pinia'
+import { watchDebounced } from '@vueuse/core'
 
 definePageMeta({ layout: false })
 
@@ -212,9 +214,12 @@ const dirOpts: { label: string; value: 'asc' | 'desc' }[] = [
   { label: 'Desc', value: 'desc' },
 ]
 
+const search = useSearchStore()
+const { query } = storeToRefs(search)
+
 async function load () {
-  if (q.value.trim()) {
-    await tasks.search(q.value.trim())
+  if (search.query.trim()) {
+    await tasks.search(search.query.trim())
   } else {
     await tasks.fetchByDate(date.value, { sort: sort.value, dir: dir.value })
   }
@@ -222,16 +227,13 @@ async function load () {
 
 function setDate(d: string) {
   date.value = d
-  q.value = ''
+  search.clear()
   load()
 }
 
 watch([date, sort, dir], load, { immediate: true })
 
-// Global search from header (if you emit on 'global-search')
-const bus = useEventBus<string>('global-search')
-bus.on((value) => { q.value = value ?? '' })
-watchDebounced(q, load, { debounce: 250, maxWait: 600 })
+watchDebounced(query, load, { debounce: 250, maxWait: 600 })
 
 watchEffect(() => {
   if (!taskList.value || !tasks.items.length) return

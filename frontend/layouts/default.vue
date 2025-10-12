@@ -50,7 +50,7 @@
         <div class="relative flex-1 min-w-[220px] max-w-lg mx-auto">
           <UInput
             id="global-search"
-            v-model="q"
+            v-model="search.query"
             placeholder="Search tasks…"
             variant="none"
             class="w-full rounded-md border border-black/10 dark:border-gray-700
@@ -58,7 +58,6 @@
                   text-sm placeholder:text-gray-500 dark:placeholder:text-gray-400
                   pl-8 pr-3 py-1
                   focus:outline-none focus:ring-0 focus-visible:ring-0 ring-0 shadow-none"
-            @update:model-value="val => bus.emit((val ?? '').trim())"
           >
             <!-- left icon -->
             <template #leading>
@@ -205,15 +204,15 @@ import {
   PopoverPortal
 } from 'reka-ui'
 import { useAuth } from '@/stores/auth'
-import { useDark, useToggle, useEventBus } from '@vueuse/core'
+import { useDark, useToggle } from '@vueuse/core'
 import { Menu, X, Sun, Moon, Search } from 'lucide-vue-next'
+import { useSearchStore } from '@/stores/search'
 
 const auth = useAuth()
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
-const q = ref('')
 const sidebarOpen = ref(false)
-const bus = useEventBus<string>('global-search')
+const search = useSearchStore()
 const userMenuOpen = ref(false)
 
 async function handleLogout() {

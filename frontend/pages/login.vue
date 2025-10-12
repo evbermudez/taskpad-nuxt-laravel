@@ -1,8 +1,8 @@
 <template>
   <main class="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 bg-white transition-colors">
     <div class="flex items-center justify-center py-6">
-        <Notebook class="w-10 h-10 text-primary dark:text-primary/80" />
-      </div>
+      <Notebook class="w-10 h-10 text-primary dark:text-primary/80" />
+    </div>
     <form
       class="w-full max-w-sm space-y-4 p-6 rounded-2xl shadow"
       @submit.prevent="onSubmit"
