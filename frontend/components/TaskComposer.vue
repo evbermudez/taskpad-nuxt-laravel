@@ -1,5 +1,5 @@
 <template>
-  <form @submit.prevent="onSubmit" class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-3">
+  <form @submit.prevent="onSubmit" class="flex gap-2" :class="mode === 'hero' ? 'flex-col' : 'flex-row'">
     <!-- Statement -->
     <template v-if="mode === 'hero'">
       <textarea
@@ -38,10 +38,16 @@
       type="submit"
       :loading="pending"
       :disabled="pending || !statement.trim()"
-      class="rounded-md inline-flex items-center gap-1.5 px-4 py-2 text-sm"
+      variant="outline"
+      icon="i-lucide-plus"
+      class="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium
+         rounded-md border border-gray-300 dark:border-gray-700
+         bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100
+         hover:bg-gray-200 dark:hover:bg-gray-700
+         transition-colors duration-150"
       @click="onSubmit"
     >
-      <Plus class="size-4" /> Add
+      Add
     </UButton>
 
     <!-- Error -->
@@ -50,11 +56,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  SelectRoot, SelectTrigger, SelectValue,
-  SelectContent, SelectViewport, SelectGroup,
-  SelectItem, SelectLabel
-} from 'reka-ui'
 import { Plus } from 'lucide-vue-next'
 import { useTasks } from '@/stores/tasks'
 

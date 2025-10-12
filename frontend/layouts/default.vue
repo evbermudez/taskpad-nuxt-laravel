@@ -32,7 +32,7 @@
         <NuxtLink to="/" class="font-semibold hidden md:block">TaskPad</NuxtLink>
 
         <!-- Top Search -->
-        <div class="relative flex-1 min-w-[220px] max-w-lg">
+        <div class="relative flex-1 min-w-[220px] max-w-lg mx-auto">
           <UInput
             v-model="q"
             id="global-search"
@@ -41,7 +41,7 @@
             class="w-full rounded-md border border-black/10 dark:border-gray-700
                   bg-white/90 dark:bg-gray-800/90
                   text-sm placeholder:text-gray-500 dark:placeholder:text-gray-400
-                  pl-8 pr-3 py-2
+                  pl-8 pr-3 py-1
                   focus:outline-none focus:ring-0 focus-visible:ring-0 ring-0 shadow-none"
             @update:model-value="val => bus.emit((val ?? '').trim())"
           >
