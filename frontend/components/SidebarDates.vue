@@ -16,7 +16,7 @@
         :value="d.value"
         class="w-full justify-start rounded-full px-3 py-1.5 text-sm font-medium
                transition-colors
-               data-[state=on]:bg-primary data-[state=on]:text-white
+               data-[state=on]:bg-gray-300 data-[state=on]:text-gray-900
                data-[state=off]:bg-transparent data-[state=off]:text-gray-800
                dark:data-[state=off]:text-gray-200
                hover:data-[state=off]:bg-gray-100 dark:hover:data-[state=off]:bg-gray-800"
