@@ -56,20 +56,65 @@ Then open http://localhost:3000
 
 | Method | Endpoint | Description |
 |:--|:--|:--|
-| GET  | /api/tasks?date=YYYY-MM-DD&sort=position\|priority\|created_at&dir=asc\|desc | List tasks by date |
-| POST | /api/tasks | Create new task `{ statement, task_date, priority? }` |
-| PATCH| /api/tasks/{id} | Update a task `{ statement?, task_date?, priority?, is_done? }` |
+| GET  | /api/tasks?date=YYYY-MM-DD&sort=position\|created_at&dir=asc\|desc | List tasks by date |
+| POST | /api/tasks | Create new task `{ statement, task_date }` |
+| PATCH| /api/tasks/{id} | Update a task `{ statement?, task_date?, is_done? }` |
 | POST | /api/tasks/{id}/toggle | Toggle task completion |
 | DELETE | /api/tasks/{id} | Delete a task |
 | POST | /api/tasks/reorder | Reorder tasks `{ orders:[{id,position}] }` |
 | GET  | /api/search?q=keyword | Search tasks across all dates |
 
+## Backend Success Metrics
+
+TaskPad follows Laravel’s best practices for maintainability and robustness.
+
+### Resourceful Endpoints & Controllers
+
+All CRUD operations follow Laravel’s apiResource convention.
+Additional endpoints (toggle, reorder, search) remain RESTful and consistent.
+
+### Strict Input Validation
+
+All user input validated through Form Requests or $request->validate() for custom endpoints.
+Protects against malformed or malicious payloads.
+
+### Consistent JSON Formatting
+
+All responses use TaskResource (or collections) for unified output.
+
+### Fine-Grained Authorization
+
+TaskPolicy enforces ownership and access control via $this->authorize() calls in the controller.
+
+### Automated Testing
+
+Pest test suite covers:
+
+- CRUD, reorder, toggle, search, and validation failure cases.
+Run tests:
+
+```
+sail exec laravel.test ./vendor/bin/pest --filter=TaskApiTest
+```
+
+### Code Style Compliance (PSR-12)
+
+The backend is PSR-12 compliant using Laravel Pint.
+
+Check:
+
+```
+sail php ./vendor/bin/pint --preset=psr12 --test
+```
+
+Auto-fix:
+
+```
+sail php ./vendor/bin/pint --preset=psr12
+```
+
 ## Notes
 
 - Drag-drop order is saved in `position`
-- Priority values:
-  - `1 = High`
-  - `2 = Medium`
-  - `3 = Low`
 -	Uses Laravel Sanctum for SPA authentication
 -	Fully type-safe API client with $fetch and Pinia
