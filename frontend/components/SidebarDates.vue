@@ -43,7 +43,7 @@ import { ToggleGroupRoot, ToggleGroupItem } from 'reka-ui'
 type DateItem = { label: string; value: string }
 
 const props = defineProps<{ date: string }>()
-const emit = defineEmits<{ (e: 'select', value: string): void }>()
+const emit = defineEmits<{ select: [string] }>()
 
 const selected = ref(props.date)
 watch(() => props.date, (v) => { if (v !== selected.value) selected.value = v }, { immediate: true })

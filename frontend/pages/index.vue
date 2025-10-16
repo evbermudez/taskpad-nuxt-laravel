@@ -182,7 +182,7 @@ import {
   SelectLabel
 } from 'reka-ui'
 import Sortable from 'sortablejs'
-import { onMounted, ref, nextTick, watchEffect, watch } from 'vue'
+import { ref, watchEffect, watch } from 'vue'
 import { useTasks } from '@/stores/tasks'
 import TaskComposer from '@/components/TaskComposer.vue'
 import TaskItem from '@/components/TaskItem.vue'
@@ -265,33 +265,6 @@ watchEffect(() => {
   ;(taskList.value as any)._sortable = sortable
 })
 
-onMounted(async () => {
-  await nextTick()
-  if (!taskList.value) return
-
-  Sortable.create(taskList.value, {
-    animation: 150,
-    draggable: '.task-row',
-    ghostClass: 'sortable-ghost',
-    chosenClass: 'sortable-chosen',
-    forceFallback: true,
-    fallbackOnBody: true,
-    delayOnTouchOnly: true,
-    delay: 120,
-    async onEnd(evt: { oldIndex?: number | null; newIndex?: number | null }) {
-      if (evt.oldIndex == null || evt.newIndex == null) return
-
-      const moved = tasks.items.splice(evt.oldIndex, 1)[0]
-      if (!moved) return
-      tasks.items.splice(evt.newIndex, 0, moved)
-
-      await tasks.reorder(
-        tasks.items.map((t, i) => ({ id: t.id, position: i + 1 })),
-        date.value
-      )
-    },
-  })
-})
 </script>
 
 <style scoped>
