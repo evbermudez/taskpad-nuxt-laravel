@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Task;
 use App\Http\Resources\TaskResource;
 use App\Http\Requests\Task\{StoreTaskRequest, UpdateTaskRequest, ReorderRequest};
+use Symfony\Component\HttpFoundation\Response;
 
 class TaskController extends Controller
 {
@@ -19,7 +20,7 @@ class TaskController extends Controller
     {
         $request->validate([
             'date' => ['required','date'],
-            'sort' => ['nullable','in:position,priority,created_at'],
+            'sort' => ['nullable','in:position,created_at'],
             'dir'  => ['nullable','in:asc,desc'],
         ]);
 
@@ -36,7 +37,9 @@ class TaskController extends Controller
     public function store(StoreTaskRequest $request)
     {
         $task = $this->taskRepository->create($request->user(), $request->validated());
-        return new TaskResource($task);
+        return (new TaskResource($task))
+            ->response()
+            ->setStatusCode(Response::HTTP_CREATED);
     }
 
     public function update(UpdateTaskRequest $request, Task $task)

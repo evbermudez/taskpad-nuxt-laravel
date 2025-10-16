@@ -15,7 +15,6 @@ return new class () extends Migration {
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->string('statement');                 // short text
             $table->date('task_date');                   // group by date
-            $table->unsignedTinyInteger('priority')->default(2); // 1=High,2=Med,3=Low
             $table->unsignedInteger('position')->default(0);     // drag order
             $table->boolean('is_done')->default(false);
             $table->timestamps();

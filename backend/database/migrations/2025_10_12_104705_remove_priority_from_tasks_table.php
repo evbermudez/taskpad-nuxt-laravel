@@ -10,6 +10,10 @@ return new class () extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasColumn('tasks', 'priority')) {
+            return;
+        }
+
         Schema::table('tasks', function (Blueprint $table) {
             $table->dropColumn('priority');
         });
@@ -20,6 +24,10 @@ return new class () extends Migration {
      */
     public function down(): void
     {
+        if (Schema::hasColumn('tasks', 'priority')) {
+            return;
+        }
+
         Schema::table('tasks', function (Blueprint $table) {
             $table->unsignedTinyInteger('priority')->default(2);
         });
