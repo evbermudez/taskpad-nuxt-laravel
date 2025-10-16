@@ -24,7 +24,6 @@ class UpdateTaskRequest extends FormRequest
         return [
             'statement' => ['sometimes','string','max:255'],
             'task_date' => ['sometimes','date'],
-            'priority'  => ['sometimes','integer','between:1,3'],
             'is_done'   => ['sometimes','boolean'],
         ];
     }
